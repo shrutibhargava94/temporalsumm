@@ -28,12 +28,12 @@
  */
 package org.terrier.applications;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 
 import org.apache.log4j.Logger;
-
 import org.terrier.matching.ResultSet;
 import org.terrier.querying.Manager;
 import org.terrier.querying.SearchRequest;
@@ -189,6 +189,7 @@ public class InteractiveQuerying {
 	 * @param q SearchRequest the search request to get results from.
 	 */
 	public void printResults(PrintWriter pw, SearchRequest q) throws IOException {
+		PrintWriter pw1=new PrintWriter(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));
 		ResultSet set = q.getResultSet();
 		int[] docids = set.getDocids();
 		double[] scores = set.getScores();
@@ -240,8 +241,11 @@ public class InteractiveQuerying {
 			{
 				sbuffer.append(docNames[metaKeyId][i]);
 				sbuffer.append(" ");
+				//pw1.println(docNames[metaKeyId][i]);
 			}
 			sbuffer.append(docids[i]);
+			pw1.println(docids[i]);
+		
 			sbuffer.append(" ");
 			sbuffer.append(scores[i]);
 			sbuffer.append('\n');
@@ -249,6 +253,9 @@ public class InteractiveQuerying {
 		//System.out.println(sbuffer.toString());
 		pw.write(sbuffer.toString());
 		pw.flush();
+		//pw1.write(sbuffer.toString());
+		pw1.flush();
+		pw1.close();
 		//pw.write("finished outputting\n");
 	}
 	/**

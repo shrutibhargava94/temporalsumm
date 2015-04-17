@@ -235,10 +235,16 @@ public class TRECIndexing {
 	 */
 	public static void main(String[] args)
 	{System.out.println("heloo world");
+	System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
+	ApplicationSetup.setProperty("terrier.index.path", "/home/bhargava/Documents/firstsetuptry/terrierindex/");
+	//ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/firstsetuptry/listforterrier/2012-08-11-00");
+	 ApplicationSetup.loadCommonProperties();
 		long startTime = System.currentTimeMillis();
 		TRECIndexing t = new TRECIndexing();
 		
 		t.index();
+		 InteractiveQuerying iq=new InteractiveQuerying();
+	        iq.processQuery("q1","+azerbaijan", 1.0);
 		long endTime = System.currentTimeMillis();
 		if(logger.isInfoEnabled())
 			logger.info("Elapsed time="+((endTime-startTime)/1000.0D));
