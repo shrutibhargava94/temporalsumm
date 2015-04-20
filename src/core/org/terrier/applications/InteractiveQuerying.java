@@ -241,7 +241,9 @@ public class InteractiveQuerying {
 			{
 				sbuffer.append(docNames[metaKeyId][i]);
 				sbuffer.append(" ");
-				//pw1.println(docNames[metaKeyId][i]);
+				if(metaKeyId==0)
+				{pw1.println(docNames[metaKeyId][i]);
+				sbuffer.append(" ");}
 			}
 			sbuffer.append(docids[i]);
 			pw1.println(docids[i]);

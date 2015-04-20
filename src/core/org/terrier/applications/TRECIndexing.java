@@ -27,14 +27,32 @@
  *   Craig Macdonald <craigm{a.}dcs.gla.ac.uk> 
  */
 package org.terrier.applications;
-import org.apache.log4j.Logger;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
+import org.apache.log4j.Logger;
 import org.terrier.indexing.Collection;
 import org.terrier.indexing.CollectionFactory;
+import org.terrier.matching.ResultSet;
+import org.terrier.structures.BitIndexPointer;
+import org.terrier.structures.DocumentIndex;
 import org.terrier.structures.Index;
+import org.terrier.structures.Lexicon;
+import org.terrier.structures.LexiconEntry;
+import org.terrier.structures.PostingIndex;
 import org.terrier.structures.indexing.Indexer;
 import org.terrier.structures.indexing.singlepass.BasicSinglePassIndexer;
 import org.terrier.structures.indexing.singlepass.BlockSinglePassIndexer;
+import org.terrier.structures.postings.IterablePosting;
 import org.terrier.utility.ApplicationSetup;
 /**
  * This class creates the indices for a test collection.
@@ -236,8 +254,19 @@ public class TRECIndexing {
 	public static void main(String[] args)
 	{System.out.println("heloo world");
 	System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
-	ApplicationSetup.setProperty("terrier.index.path", "/home/bhargava/Documents/firstsetuptry/terrierindex/");
-	//ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/firstsetuptry/listforterrier/2012-08-11-00");
+	
+	Path dir = Paths.get("/home/bhargava/Documents/firstsetuptry/listforterrier");
+	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+	    for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierindexmulti/"+file.getFileName().toString());
+		try {
+			Files.createDirectory(dirfolder);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Unable to create directory");
+			e.printStackTrace();
+		}
+	    	ApplicationSetup.setProperty("terrier.index.path", dirfolder.toString());
+	ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/firstsetuptry/listforterrier/"+file.getFileName().toString());
 	 ApplicationSetup.loadCommonProperties();
 		long startTime = System.currentTimeMillis();
 		TRECIndexing t = new TRECIndexing();
@@ -245,9 +274,46 @@ public class TRECIndexing {
 		t.index();
 		 InteractiveQuerying iq=new InteractiveQuerying();
 	        iq.processQuery("q1","+azerbaijan", 1.0);
+	       //result file name and docid in this file 
+	       Scanner in=new Scanner(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));
+	      // BufferedWriter bw=new BufferedWriter(new FileWriter(new File("home/bhargava/Documents/firstsetuptry/frequency)))
+	        Index index = Index.createIndex();
+	        PostingIndex<?> di = index.getDirectIndex();
+	        DocumentIndex doi = index.getDocumentIndex();
+	        Lexicon<String> lex = index.getLexicon();
+	        Path dirfolderfreq = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierfreqstat/"+file.getFileName().toString());
+			try {
+				Files.createDirectory(dirfolderfreq);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				System.out.println("Unable to create directory");
+				e.printStackTrace();
+			}
+	        while(in.hasNext())
+	        {String filename=in.next();
+	       String[] ar=filename.split("/");
+	        int docid = in.nextInt(); //docids are 0-based
+	        HashMap<String,Double> freq=new HashMap<String,Double>();
+	        IterablePosting postings = di.getPostings((BitIndexPointer)doi.getDocumentEntry(docid));
+	        while (postings.next() != IterablePosting.EOL) {
+	        	Map.Entry<String,LexiconEntry> lee = lex.getLexiconEntry(postings.getId());
+	        	System.out.println(lee.getKey() + " " + postings.getFrequency());
+	        	freq.put(lee.getKey(),(double) postings.getFrequency());
+	        }
+	        FileOutputStream fout = new FileOutputStream(dirfolderfreq.toString()+"/"+ar[ar.length-1]);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);   
+			oos.writeObject(freq);
+			oos.close();
+	        
+	        }
 		long endTime = System.currentTimeMillis();
 		if(logger.isInfoEnabled())
 			logger.info("Elapsed time="+((endTime-startTime)/1000.0D));
+	    }
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	} 
 	}
 	
 	

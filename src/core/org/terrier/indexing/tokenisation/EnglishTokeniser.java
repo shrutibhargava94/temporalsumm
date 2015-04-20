@@ -59,7 +59,7 @@ import org.terrier.utility.ApplicationSetup;
 public class EnglishTokeniser extends Tokeniser {
 
 	/** The maximum number of digits that are allowed in valid terms. */
-	protected final static int maxNumOfDigitsPerTerm = 4;
+	protected final static int maxNumOfDigitsPerTerm = 0;
 	/**
 	 * The maximum number of consecutive same letters or digits that are
 	 * allowed in valid terms.
