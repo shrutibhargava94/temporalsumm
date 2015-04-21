@@ -19,7 +19,7 @@ import org.terrier.terms.TermPipeline;
 class stemmingandstopwordremovaltry
 {
 public static ArrayList<String> content(String text) throws IOException
-  {System.setProperty("terrier.home","C:\\Users\\bhargava\\Downloads\\terrier-4.0\\terrier-4.0-win");
+  {System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
   TermPipeline _next = new BaseTermPipelineAccessor();
   Stopwords stop=new Stopwords(_next);
   

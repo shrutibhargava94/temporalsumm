@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,7 +28,7 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
 
-class ductraining27march
+class trainingdata
 {static String datapath="/home/bhargava/Documents/firstsetuptry/DUCcontent";
 static String summarypath="/home/bhargava/Documents/firstsetuptry/models";
 static ArrayList<ArrayList<HashMap<String,Integer>>> summfreq=new ArrayList<ArrayList<HashMap<String,Integer>>>();
@@ -140,8 +142,8 @@ static double lamda=0.3;
 				    	    for(CoreMap sentence: sentences) {
 				    	    	double score=processsentence(sentence,topic);
 				    	    	System.out.println(topic+" "+score+" "+sentence.toString());
-				    	    	bw.write(topic+"?"+score+"?"+sentence.toString());
-				    	    	bw.newLine();
+				    	    	//bw.write(topic+"?"+score+"?"+sentence.toString());
+				    	    	//bw.newLine();
 				    	    	sentencescore s1=new sentencescore();
 				    	    	s1.score=score;
 				    	    	s1.sentence=sentence.toString();
@@ -149,6 +151,18 @@ static double lamda=0.3;
 				    	    	s.add(s1);
 				    	    }
 				    }
+				    Collections.sort(s,new Comparator<sentencescore>(){
+				    	public int compare(sentencescore s1,sentencescore s2)
+				    	{
+				    		return s2.score.compareTo(s1.score);
+				    	}
+				    });
+				    for(int l=0;l<s.size();l++)
+				    {
+				    	bw.write(l+"\t"+s.get(l).topic+"\t"+s.get(l).score+"\t"+s.get(l).sentence);
+				    	bw.newLine();
+				    }
+				    /*
 				    //sorting
 				    for(int l=0;l<s.size()-1;l++)
 				    {double min=s.get(l).score;
@@ -239,7 +253,7 @@ static double lamda=0.3;
 				    {
 				    	bw1.write(l+"?"+selected.get(l).topic+"?"+selected.get(l).score+"?"+selected.get(l).sentence);
 				    	bw1.newLine();
-				    }
+				    }*/
 				   
 				    topic++;
 		    }
