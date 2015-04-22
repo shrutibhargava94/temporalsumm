@@ -257,7 +257,7 @@ public class TRECIndexing {
 	
 	Path dir = Paths.get("/home/bhargava/Documents/firstsetuptry/listforterrier");
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-	    for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierindexmulti/"+file.getFileName().toString());
+	    for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierindexmulti1/"+file.getFileName().toString());
 		try {
 			Files.createDirectory(dirfolder);
 		} catch (IOException e) {
@@ -281,7 +281,7 @@ public class TRECIndexing {
 	        PostingIndex<?> di = index.getDirectIndex();
 	        DocumentIndex doi = index.getDocumentIndex();
 	        Lexicon<String> lex = index.getLexicon();
-	        Path dirfolderfreq = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierfreqstat/"+file.getFileName().toString());
+	        Path dirfolderfreq = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierfreqstat1/"+file.getFileName().toString());
 			try {
 				Files.createDirectory(dirfolderfreq);
 			} catch (IOException e) {

@@ -75,7 +75,7 @@ public class InteractiveQuerying {
 	protected Index index;
 	/** The maximum number of presented results. */
 	protected static int RESULTS_LENGTH = 
-		Integer.parseInt(ApplicationSetup.getProperty("interactive.output.format.length", "1000"));
+		Integer.parseInt(ApplicationSetup.getProperty("interactive.output.format.length", "1"));
 	
 	protected String[] metaKeys = ApplicationSetup.getProperty("interactive.output.meta.keys", "docno").split("\\s*,\\s*");
 	

@@ -23,7 +23,7 @@ class learningscoresort
 			e.printStackTrace();
 		}
 		BufferedReader br=new BufferedReader(fr);
-		File f2=new File("/home/bhargava/Documents/firstsetuptry/test1.txt");
+		File f2=new File("/home/bhargava/Documents/firstsetuptry/trecfeatures2012-08-11-00.txt");
 		FileReader fr1 = null;
 		try {
 			fr1 = new FileReader(f2);
