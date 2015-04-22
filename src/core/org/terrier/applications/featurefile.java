@@ -18,7 +18,7 @@ import edu.stanford.nlp.util.CoreMap;
 
 class featurefile
 {int sentencepos;
-	public void computefeaturesforfile(String string, String files, ArrayList<String> querycontent, HashMap<String, Double> hourfreq, HashMap<String, Double> topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic) {
+	public void computefeaturesforfile(String string, String files, ArrayList<String> querycontent, HashMap<String, Double> hourfreq, HashMap<String, Double> topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic, HashMap<String, sentencerank> rankmap) {
 		// TODO Auto-generated method stub
 		File article=new File(string+"/"+files);
 		try {
@@ -42,8 +42,9 @@ class featurefile
 		    List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 		  sentencepos=0;
 		    for(CoreMap sentence: sentences) {
-		    	featuresentence sent=new featuresentence(sentencepos,sentence.toString(),querycontent,hourfreq,topicweight,freq,bw,topic);
-		    	sent.computesentencefeatures();
+		    	featuresentence sent=new featuresentence(sentencepos,sentence.toString(),querycontent,hourfreq,topicweight,freq,bw,topic,rankmap);
+		    	//sent.computesentencefeatures();
+		    	sent.computesentencefeaturestraining();
 		    	sentencepos++;
 		    }
 		    

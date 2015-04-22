@@ -103,7 +103,7 @@ HashMap<String,Double> hourfreq;
 			
 			featurefile file=new featurefile();
 			System.out.println(path+innerfolders);
-			file.computefeaturesforfile(path+innerfolders,files[i],querycontent,hourfreq,topicweight,freq,bw,topic);
+			file.computefeaturesforfile(path+innerfolders,files[i],querycontent,hourfreq,topicweight,freq,bw,topic,null);
 		}
 }
 }

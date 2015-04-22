@@ -26,7 +26,8 @@ private double mutualinfo;
 private HashMap<String, Double> sentencefreq;
 private BufferedWriter bw;
 private int topic;
-	public featuresentence(int sentencepos, String string, ArrayList<String> querycontent, HashMap<String, Double> hourfreq,HashMap<String,Double>topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic) {
+private HashMap<String, sentencerank> rankmap;
+	public featuresentence(int sentencepos, String string, ArrayList<String> querycontent, HashMap<String, Double> hourfreq,HashMap<String,Double>topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic, HashMap<String, sentencerank> rankmap) {
 		// TODO Auto-generated constructor stub
 		absoluteposition=(double)sentencepos;
 		sentence=string;
@@ -36,6 +37,7 @@ private int topic;
 		this.freq=freq;
 		this.bw=bw;
 		this.topic=topic;
+		this.rankmap=rankmap;
 	}
 public void preprocesssentence()
 {
@@ -62,6 +64,29 @@ public void preprocesssentence()
 			e.printStackTrace();
 		}
 		 try {
+			bw.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	public void computesentencefeaturestraining()
+	{
+		preprocesssentence();
+		numberofcontentwords=sentencecontent.size();
+		unigramoverlap();
+		sumbasic();
+		sumfocus();
+		mutualinfo();
+		 System.out.println(sentence+" "+absoluteposition+" "+numberofcontentwords+" "+unigramoverlap+" "+sumbasic+" "+sumfocus+" "+mutualinfo);
+		// System.out.println(rankmap);
+		 try {if(rankmap.containsKey(sentence))
+			bw.write(rankmap.get(sentence).rank+" qid:"+rankmap.get(sentence).topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" #"+sentence);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 try {if(rankmap.containsKey(sentence))
 			bw.newLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

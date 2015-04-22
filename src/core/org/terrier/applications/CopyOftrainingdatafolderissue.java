@@ -167,7 +167,7 @@ static double lamda=0.3;
 				    	    	//bw.newLine();
 				    	    	sentencescore s1=new sentencescore();
 				    	    	s1.score=score;
-				    	    	s1.sentence=sentence.toString();
+				    	    	s1.sentence=sentence.toString().replaceAll("\\s+"," ");
 				    	    	s1.topic=topic;
 				    	    	s.add(s1);
 				    	    }
@@ -181,13 +181,13 @@ static double lamda=0.3;
 				    
 				    for(int l=0;l<s.size();l++)
 				    {
-				    	try {
-							bw.write(l+"\t"+s.get(l).topic+"\t"+s.get(l).score+"\t"+s.get(l).sentence);
+				    	try {int rnk=l+1;
+							bw.write(rnk+"\t"+s.get(l).topic+"\t"+s.get(l).score+"\t"+s.get(l).sentence);
 							sentencerank sr=new sentencerank();
 							sr.rank=l+1;
 							sr.topic=s.get(l).topic;
 							sr.sentence=s.get(l).sentence;
-							rankmap.put(s.get(l).sentence, sr);
+							//rankmap.put(s.get(l).sentence, sr);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
