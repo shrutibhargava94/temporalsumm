@@ -1,5 +1,6 @@
 package org.terrier.applications;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,7 +24,9 @@ private HashMap<String, Double> topicweight;
 private HashMap<String, Double> freq;
 private double mutualinfo;
 private HashMap<String, Double> sentencefreq;
-	public featuresentence(int sentencepos, String string, ArrayList<String> querycontent, HashMap<String, Double> hourfreq,HashMap<String,Double>topicweight, HashMap<String, Double> freq) {
+private BufferedWriter bw;
+private int topic;
+	public featuresentence(int sentencepos, String string, ArrayList<String> querycontent, HashMap<String, Double> hourfreq,HashMap<String,Double>topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic) {
 		// TODO Auto-generated constructor stub
 		absoluteposition=(double)sentencepos;
 		sentence=string;
@@ -31,6 +34,8 @@ private HashMap<String, Double> sentencefreq;
 		this.hourfreq=hourfreq;
 		this.topicweight=topicweight;
 		this.freq=freq;
+		this.bw=bw;
+		this.topic=topic;
 	}
 public void preprocesssentence()
 {
@@ -50,6 +55,18 @@ public void preprocesssentence()
 		sumfocus();
 		mutualinfo();
 		 System.out.println(sentence+" "+absoluteposition+" "+numberofcontentwords+" "+unigramoverlap+" "+sumbasic+" "+sumfocus+" "+mutualinfo);
+		 try {
+			bw.write("0"+" qid:"+topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" #"+sentence);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		 try {
+			bw.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	void unigramoverlap()
 	{

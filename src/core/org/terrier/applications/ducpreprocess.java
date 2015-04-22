@@ -19,7 +19,6 @@ class ducpreprocess
 {public static void main(String args[])
 	{
 	
-	
 	Path dir = Paths.get("/home/bhargava/Downloads/DUC2007_Summarization_Documents/duc2007_testdocs/main/");
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
 	    for (Path folder: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/firstsetuptry/duccontent21april/"+folder.getFileName().toString());
@@ -30,6 +29,17 @@ class ducpreprocess
 			System.out.println("Unable to create directory");
 			e.printStackTrace();
 		}
+		File f1=new File("/home/bhargava/Documents/firstsetuptry/ducontentlist/"+folder.getFileName().toString());
+		FileWriter fw1=null;
+		try {
+			 fw1=new FileWriter(f1);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		BufferedWriter bw1=new BufferedWriter(fw1);
+		
 	    	try (DirectoryStream<Path> stream1 = Files.newDirectoryStream(folder)) {
 	    	    for (Path file: stream1) {
 	    	    	File f=new File(dirfolder.toString()+"/"+file.getFileName().toString());
@@ -50,7 +60,8 @@ class ducpreprocess
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
-					}
+					}bw1.write(dirfolder.toString()+"/"+file.getFileName().toString());
+					bw1.newLine();
 	    	    	Document doc = Jsoup.parse(text, "", Parser.xmlParser());
 	    	    	for (Element e : doc.select("Headline")) {
 	    	            System.out.println(e.text());
@@ -66,6 +77,7 @@ class ducpreprocess
 	    	    }
 	
 	    }
+	    	bw1.close();
 	}
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block

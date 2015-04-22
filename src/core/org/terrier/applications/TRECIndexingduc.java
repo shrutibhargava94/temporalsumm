@@ -48,6 +48,7 @@ import org.terrier.structures.DocumentIndex;
 import org.terrier.structures.Index;
 import org.terrier.structures.Lexicon;
 import org.terrier.structures.LexiconEntry;
+import org.terrier.structures.MetaIndex;
 import org.terrier.structures.PostingIndex;
 import org.terrier.structures.indexing.Indexer;
 import org.terrier.structures.indexing.singlepass.BasicSinglePassIndexer;
@@ -255,7 +256,7 @@ public class TRECIndexingduc {
 	{System.out.println("heloo world");
 	System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
 	
-	Path dir = Paths.get("/home/bhargava/Documents/firstsetuptry/listforterrier");
+	Path dir = Paths.get("/home/bhargava/Documents/firstsetuptry/ducontentlist");
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
 	    for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierindexduc/"+file.getFileName().toString());
 		try {
@@ -266,22 +267,20 @@ public class TRECIndexingduc {
 			e.printStackTrace();
 		}
 	    	ApplicationSetup.setProperty("terrier.index.path", dirfolder.toString());
-	ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/firstsetuptry/listforterrierduc/"+file.getFileName().toString());
+	ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/firstsetuptry/ducontentlist/"+file.getFileName().toString());
 	 ApplicationSetup.loadCommonProperties();
 		long startTime = System.currentTimeMillis();
 		TRECIndexingduc t = new TRECIndexingduc();
 		
 		t.index();
-		 InteractiveQuerying iq=new InteractiveQuerying();
-	        iq.processQuery("q1","+azerbaijan", 1.0);
-	       //result file name and docid in this file 
-	       Scanner in=new Scanner(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));
+		
 	      // BufferedWriter bw=new BufferedWriter(new FileWriter(new File("home/bhargava/Documents/firstsetuptry/frequency)))
 	        Index index = Index.createIndex();
 	        PostingIndex<?> di = index.getDirectIndex();
 	        DocumentIndex doi = index.getDocumentIndex();
 	        Lexicon<String> lex = index.getLexicon();
-	        Path dirfolderfreq = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierfreqstat/"+file.getFileName().toString());
+	        MetaIndex meta = index.getMetaIndex();
+	        Path dirfolderfreq = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierfreqstatduc/"+file.getFileName().toString());
 			try {
 				Files.createDirectory(dirfolderfreq);
 			} catch (IOException e) {
@@ -289,10 +288,11 @@ public class TRECIndexingduc {
 				System.out.println("Unable to create directory");
 				e.printStackTrace();
 			}
-	        while(in.hasNext())
-	        {String filename=in.next();
-	       String[] ar=filename.split("/");
-	        int docid = in.nextInt(); //docids are 0-based
+			doi.getNumberOfDocuments();
+	        for(int docid=0;docid<doi.getNumberOfDocuments();docid++)
+	        	{
+	      String filename=meta.getItem("filename", docid);
+	      String[] ar=filename.split("/");
 	        HashMap<String,Double> freq=new HashMap<String,Double>();
 	        IterablePosting postings = di.getPostings((BitIndexPointer)doi.getDocumentEntry(docid));
 	        while (postings.next() != IterablePosting.EOL) {
@@ -300,7 +300,7 @@ public class TRECIndexingduc {
 	        	System.out.println(lee.getKey() + " " + postings.getFrequency());
 	        	freq.put(lee.getKey(),(double) postings.getFrequency());
 	        }
-	        FileOutputStream fout = new FileOutputStream(dirfolderfreq.toString()+"/"+ar[ar.length-1]);
+	       FileOutputStream fout = new FileOutputStream(dirfolderfreq.toString()+"/"+ar[ar.length-1]);
 			ObjectOutputStream oos = new ObjectOutputStream(fout);   
 			oos.writeObject(freq);
 			oos.close();

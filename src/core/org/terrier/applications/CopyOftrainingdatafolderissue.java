@@ -4,9 +4,11 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
@@ -33,6 +35,7 @@ class CopyOftrainingdatafolderissue
 static String summarypath="/home/bhargava/Documents/firstsetuptry/models";
 static ArrayList<ArrayList<HashMap<String,Integer>>> summfreq=new ArrayList<ArrayList<HashMap<String,Integer>>>();
 static ArrayList<ArrayList<Integer>> modhi=new ArrayList<ArrayList<Integer>>();
+static HashMap<String,sentencerank> rankmap=new HashMap<String, sentencerank>();
 static double lamda=0.3;
 	public static void processsummaries()
 	{int topic=0;
@@ -169,16 +172,22 @@ static double lamda=0.3;
 				    	    	s.add(s1);
 				    	    }
 				    }
-				    /*Collections.sort(s,new Comparator<sentencescore>(){
+				    Collections.sort(s,new Comparator<sentencescore>(){
 				    	public int compare(sentencescore s1,sentencescore s2)
 				    	{
 				    		return s2.score.compareTo(s1.score);
 				    	}
-				    });*/
+				    });
+				    
 				    for(int l=0;l<s.size();l++)
 				    {
 				    	try {
 							bw.write(l+"\t"+s.get(l).topic+"\t"+s.get(l).score+"\t"+s.get(l).sentence);
+							sentencerank sr=new sentencerank();
+							sr.rank=l+1;
+							sr.topic=s.get(l).topic;
+							sr.sentence=s.get(l).sentence;
+							rankmap.put(s.get(l).sentence, sr);
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
@@ -190,6 +199,32 @@ static double lamda=0.3;
 							e.printStackTrace();
 						}
 				    }
+				   /* FileOutputStream fout = null;
+					try {
+						fout = new FileOutputStream("/home/bhargava/Documents/firstsetuptry/duc2007hashmap");
+					} catch (FileNotFoundException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+					ObjectOutputStream oos = null;
+					try {
+						oos = new ObjectOutputStream(fout);
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}   
+					try {
+						oos.writeObject(rankmap);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					try {
+						oos.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}*/
 				    /*
 				    //sorting
 				    for(int l=0;l<s.size()-1;l++)
