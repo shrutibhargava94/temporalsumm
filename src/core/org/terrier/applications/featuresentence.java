@@ -80,13 +80,13 @@ public void preprocesssentence()
 		mutualinfo();
 		 System.out.println(sentence+" "+absoluteposition+" "+numberofcontentwords+" "+unigramoverlap+" "+sumbasic+" "+sumfocus+" "+mutualinfo);
 		// System.out.println(rankmap);
-		 try {if(rankmap.containsKey(sentence))
+		 try {if(rankmap.containsKey(sentence))//why wont a sentence be in this rankmap?
 			bw.write(rankmap.get(sentence).rank+" qid:"+rankmap.get(sentence).topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" #"+sentence);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		 try {if(rankmap.containsKey(sentence))
+		 try {if(rankmap.containsKey(sentence))//why wont a sentence be in this rankmap?
 			bw.newLine();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
