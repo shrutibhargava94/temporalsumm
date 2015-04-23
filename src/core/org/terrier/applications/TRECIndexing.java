@@ -255,9 +255,9 @@ public class TRECIndexing {
 	{System.out.println("heloo world");
 	System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
 	
-	Path dir = Paths.get("/home/bhargava/Documents/firstsetuptry/listforterrier");
+	Path dir = Paths.get("/home/bhargava/Documents/2try/listforterrier");
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-	    for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierindexmulti1/"+file.getFileName().toString());
+	    for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/2try/terrierindex/"+file.getFileName().toString());
 		try {
 			Files.createDirectory(dirfolder);
 		} catch (IOException e) {
@@ -266,14 +266,14 @@ public class TRECIndexing {
 			e.printStackTrace();
 		}
 	    	ApplicationSetup.setProperty("terrier.index.path", dirfolder.toString());
-	ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/firstsetuptry/listforterrier/"+file.getFileName().toString());
+	ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/2try/listforterrier/"+file.getFileName().toString());
 	 ApplicationSetup.loadCommonProperties();
 		long startTime = System.currentTimeMillis();
 		TRECIndexing t = new TRECIndexing();
 		
 		t.index();
 		 InteractiveQuerying iq=new InteractiveQuerying();
-	        iq.processQuery("q1","+azerbaijan", 1.0);
+	        iq.processQuery("q1","+iran +earthquake", 1.0);
 	       //result file name and docid in this file 
 	       Scanner in=new Scanner(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));
 	      // BufferedWriter bw=new BufferedWriter(new FileWriter(new File("home/bhargava/Documents/firstsetuptry/frequency)))
@@ -281,7 +281,7 @@ public class TRECIndexing {
 	        PostingIndex<?> di = index.getDirectIndex();
 	        DocumentIndex doi = index.getDocumentIndex();
 	        Lexicon<String> lex = index.getLexicon();
-	        Path dirfolderfreq = Paths.get("/home/bhargava/Documents/firstsetuptry/terrierfreqstat1/"+file.getFileName().toString());
+	        Path dirfolderfreq = Paths.get("/home/bhargava/Documents/2try/terrierfreqstat/"+file.getFileName().toString());
 			try {
 				Files.createDirectory(dirfolderfreq);
 			} catch (IOException e) {

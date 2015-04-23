@@ -8,12 +8,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
-class learningscoresort
+class CopyOflearningscoresortmulti
 {static List<sentencescore> ranking=new ArrayList<sentencescore>();
 private static double lamda=0;
 public static double jc_check(String ta,String tb)
@@ -42,7 +43,7 @@ double jc=(double)hac.size()/(double)hac1.size();
 return jc;
 
 }
-public static void mmr(List<sentencescore> s)
+public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 {
 	ArrayList<sentencescore> selected=new ArrayList<sentencescore>();
     selected.add(s.get(0));
@@ -82,10 +83,17 @@ public static void mmr(List<sentencescore> s)
     sel.topic=s.get(pos).topic;
     selected.add(sel);
     System.out.println(sel.sentence);
+    try {
+		bw2.write(sel.sentence);
+		bw2.newLine();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
     }
 }
-	public static void main(String args[])
-	{File f=new File("/home/bhargava/Documents/2try/ranked1201normtvskcv10.txt");
+	public static void process(String folders)
+	{File f=new File("/home/bhargava/Documents/2try/ranked"+folders);
 	FileWriter fw=null;
 	try {
 		 fw=new FileWriter(f);
@@ -95,7 +103,17 @@ public static void mmr(List<sentencescore> s)
 	}
 	
 	BufferedWriter bw=new BufferedWriter(fw);
-		File f1=new File("/home/bhargava/Documents/scorefiles/kcvtvsmodel10.txt");
+	File f3=new File("/home/bhargava/Documents/2try/rankedmmr"+folders);
+	FileWriter fw2=null;
+	try {
+		 fw2=new FileWriter(f3);
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	
+	BufferedWriter bw2=new BufferedWriter(fw2);
+		File f1=new File("/home/bhargava/Documents/scorefiles/kcv/"+folders);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -104,7 +122,7 @@ public static void mmr(List<sentencescore> s)
 			e.printStackTrace();
 		}
 		BufferedReader br=new BufferedReader(fr);
-		File f2=new File("/home/bhargava/Documents/2try/trecfeatures2012-08-12-01.txt");
+		File f2=new File("/home/bhargava/Documents/2try/featuresfiles/"+folders);
 		FileReader fr1 = null;
 		try {
 			fr1 = new FileReader(f2);
@@ -140,7 +158,13 @@ public static void mmr(List<sentencescore> s)
 		    		return s1.topic-s2.topic;
 		    	}
 		    });
-			mmr(ranking);
+			mmr(ranking,bw2);
+			try {
+				bw2.close();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			for(int i=0;i<ranking.size();i++)
 			{
 				//System.out.println(i+" "+ranking.get(i).topic+" "+ranking.get(i).sentence);
@@ -158,4 +182,17 @@ public static void mmr(List<sentencescore> s)
 				}
 			}
 		}
+	
+	public static void main(String args[])
+	{String scorepath="/home/bhargava/Documents/scorefiles/kcv";
+		File scores=new File(scorepath);
+		String[] folders=scores.list();
+		Collections.sort(Arrays.asList(folders));
+		
+		for(int i=0;i<folders.length;i++)
+		{
+			System.out.println(folders[i]);
+			process(folders[i]);
+		}
+	}
 	}
