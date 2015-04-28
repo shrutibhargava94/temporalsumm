@@ -68,7 +68,12 @@ static HashMap<String,Double> topicweight;
 		
 			hour.computefeaturesforhour(freqhashmappath,innerfolders[i],bw,i,rankmap);
 		}
-		
+	try {
+		bw.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}	
 	}
 	
 	

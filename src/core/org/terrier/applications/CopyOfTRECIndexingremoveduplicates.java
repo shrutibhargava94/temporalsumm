@@ -31,10 +31,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -64,9 +66,9 @@ import org.terrier.utility.ApplicationSetup;
  * </ul>
  * @author Gianni Amati, Vassilis Plachouras, Ben He, Craig Macdonald
  */
-public class TRECIndexing {
+public class CopyOfTRECIndexingremoveduplicates {
 	/** The logger used */
-	private static Logger logger = Logger.getLogger(TRECIndexing.class);
+	private static Logger logger = Logger.getLogger(CopyOfTRECIndexingremoveduplicates.class);
 	/** The collection to index. */
 	Collection collectionTREC;
 	
@@ -80,7 +82,7 @@ public class TRECIndexing {
 	 * @param _path Absolute path to where the index should be created
 	 * @param _prefix Prefix of the index files, usually "data"
 	 */
-	public TRECIndexing(String _path, String _prefix)
+	public CopyOfTRECIndexingremoveduplicates(String _path, String _prefix)
 	{
 		path = _path; prefix = _prefix;
 		//load the appropriate collection
@@ -118,7 +120,7 @@ public class TRECIndexing {
 	 * A default constructor that initialised the data structures
 	 * to use for indexing.
 	 */
-	public TRECIndexing() {
+	public CopyOfTRECIndexingremoveduplicates() {
 		this(ApplicationSetup.TERRIER_INDEX_PATH, ApplicationSetup.TERRIER_INDEX_PREFIX);
 	}
 	
@@ -274,19 +276,31 @@ public class TRECIndexing {
 	        PostingIndex<?> di = index.getDirectIndex();
 	        DocumentIndex doi = index.getDocumentIndex();
 	        Lexicon<String> lex = index.getLexicon();
-	        /*Path dirfolderfreq = Paths.get("/home/bhargava/Documents/iranbeginterrierfreqstat/"+file.getFileName().toString());
+	       /* Path dirfolderfreq = Paths.get("/home/bhargava/Documents/iranbeginterrierfreqstatdupremove/"+file.getFileName().toString());
 			try {
 				Files.createDirectory(dirfolderfreq);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				System.out.println("Unable to create directory");
 				e.printStackTrace();
-			}*/
+			}*/ArrayList<String> filenamelist=new ArrayList<String>();
+			String filename = null;
+			if(in.hasNext())
+			filename=in.next();
+			in.next();
+			filenamelist.add(filename);
 	        while(in.hasNext())
-	        {String filename=in.next();
+	        {filename=in.next();
+	        in.next();
 	        System.out.println(filename);
-	        
-	       String[] ar=filename.split("/");
+	        String text = new String(Files.readAllBytes(Paths.get(filename)), StandardCharsets.UTF_8);
+	  for(int k=0;k<filenamelist.size();k++)
+	  {String textk = new String(Files.readAllBytes(Paths.get(filenamelist.get(k))), StandardCharsets.UTF_8);
+		  if(text.equals(textk))
+		  { System.out.println(filename+" "+filenamelist.get(k));System.in.read();
+		  }
+	  }
+	      /* String[] ar=filename.split("/");
 	        int docid = in.nextInt(); //docids are 0-based
 	        HashMap<String,Double> freq=new HashMap<String,Double>();
 	        IterablePosting postings = di.getPostings((BitIndexPointer)doi.getDocumentEntry(docid));
@@ -295,7 +309,7 @@ public class TRECIndexing {
 	        	//System.out.println(lee.getKey() + " " + postings.getFrequency());
 	        	freq.put(lee.getKey(),(double) postings.getFrequency());
 	        }
-	        /*FileOutputStream fout = new FileOutputStream(dirfolderfreq.toString()+"/"+ar[ar.length-1]);
+	       /* FileOutputStream fout = new FileOutputStream(dirfolderfreq.toString()+"/"+ar[ar.length-1]);
 			ObjectOutputStream oos = new ObjectOutputStream(fout);   
 			oos.writeObject(freq);
 			oos.close();*/

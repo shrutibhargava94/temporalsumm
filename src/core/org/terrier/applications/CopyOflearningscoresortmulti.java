@@ -16,7 +16,7 @@ import java.util.List;
 
 class CopyOflearningscoresortmulti
 {static List<sentencescore> ranking=new ArrayList<sentencescore>();
-private static double lamda=0;
+private static double lamda=0.0;
 public static double jc_check(String ta,String tb)
 { HashSet<String> ha = null;
 try {
@@ -93,7 +93,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
     }
 }
 	public static void process(String folders)
-	{File f=new File("/home/bhargava/Documents/2try/ranked"+folders);
+	{File f=new File("/home/bhargava/Documents/iranbeginresults/rankedner"+folders);
 	FileWriter fw=null;
 	try {
 		 fw=new FileWriter(f);
@@ -103,7 +103,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 	}
 	
 	BufferedWriter bw=new BufferedWriter(fw);
-	File f3=new File("/home/bhargava/Documents/2try/rankedmmr"+folders);
+	File f3=new File("/home/bhargava/Documents/iranbeginresults/rankedmmrner"+folders);
 	FileWriter fw2=null;
 	try {
 		 fw2=new FileWriter(f3);
@@ -113,7 +113,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 	}
 	
 	BufferedWriter bw2=new BufferedWriter(fw2);
-		File f1=new File("/home/bhargava/Documents/scorefiles/kcv/"+folders);
+		File f1=new File("/home/bhargava/Documents/scorefiles/iranbeginscore/"+folders);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -122,7 +122,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 			e.printStackTrace();
 		}
 		BufferedReader br=new BufferedReader(fr);
-		File f2=new File("/home/bhargava/Documents/2try/featuresfiles/"+folders);
+		File f2=new File("/home/bhargava/Documents/iranbeginfeatures/"+folders);
 		FileReader fr1 = null;
 		try {
 			fr1 = new FileReader(f2);
@@ -133,7 +133,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 		BufferedReader br1=new BufferedReader(fr1);
 		String line;
 		//rankmap=new HashMap<String, sentencerank>();
-		
+		int num=0;
 			try {
 				while((line=br.readLine())!=null)
 				{String[] score=line.split("\t");
@@ -141,9 +141,11 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 				ss.topic=Integer.parseInt(score[0]);
 				ss.score=Double.parseDouble(score[2]);
 				String line1=br1.readLine();
+				System.out.println(num);
 				String[] sent=line1.split("#");
 				ss.sentence=sent[1];
 				ranking.add(ss);
+				num++;
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -181,10 +183,28 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 					e.printStackTrace();
 				}
 			}
+			try {
+				bw.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				br1.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	
 	public static void main(String args[])
-	{String scorepath="/home/bhargava/Documents/scorefiles/kcv";
+	{String scorepath="/home/bhargava/Documents/scorefiles/iranbeginscore";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));

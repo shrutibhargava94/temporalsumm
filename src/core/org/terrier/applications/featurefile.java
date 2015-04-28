@@ -25,7 +25,7 @@ class featurefile
 			Document doc = Jsoup.parse(article, "UTF-8");
 			String text = doc.body().text();
 			Properties props = new Properties();
-		    props.setProperty("annotators", "tokenize, ssplit");
+		    props.setProperty("annotators", "tokenize, ssplit, pos, lemma,ner");
 		    StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
 		    
 		    // read some text in the text variable
@@ -42,7 +42,7 @@ class featurefile
 		    List<CoreMap> sentences = document.get(SentencesAnnotation.class);
 		  sentencepos=0;
 		    for(CoreMap sentence: sentences) {
-		    	featuresentence sent=new featuresentence(sentencepos,sentence.toString(),querycontent,hourfreq,topicweight,freq,bw,topic,rankmap);
+		    	featuresentence sent=new featuresentence(sentencepos,sentence,querycontent,hourfreq,topicweight,freq,bw,topic,rankmap);
 		    	sent.computesentencefeatures();
 		    	//sent.computesentencefeaturestraining();
 		    	sentencepos++;

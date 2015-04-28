@@ -8,6 +8,11 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.util.CoreMap;
+
 class featuresentence
 {double absoluteposition;
 double numberofcontentwords;
@@ -27,10 +32,16 @@ private HashMap<String, Double> sentencefreq;
 private BufferedWriter bw;
 private int topic;
 private HashMap<String, sentencerank> rankmap;
-	public featuresentence(int sentencepos, String string, ArrayList<String> querycontent, HashMap<String, Double> hourfreq,HashMap<String,Double>topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic, HashMap<String, sentencerank> rankmap) {
+CoreMap sentencecoremap;
+private double location;
+private double time;
+private double date;
+private double duration;
+private double money;
+	public featuresentence(int sentencepos, CoreMap sentence2, ArrayList<String> querycontent, HashMap<String, Double> hourfreq,HashMap<String,Double>topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic, HashMap<String, sentencerank> rankmap) {
 		// TODO Auto-generated constructor stub
 		absoluteposition=(double)sentencepos;
-		sentence=string;
+		sentence=sentence2.toString();
 		this.querycontent=querycontent;
 		this.hourfreq=hourfreq;
 		this.topicweight=topicweight;
@@ -38,6 +49,13 @@ private HashMap<String, sentencerank> rankmap;
 		this.bw=bw;
 		this.topic=topic;
 		this.rankmap=rankmap;
+		this.sentencecoremap=sentence2;
+		location=0.0;
+		time=0.0;
+		money=0.0;
+		date=0.0;
+		duration=0.0;
+	
 	}
 public void preprocesssentence()
 {
@@ -56,9 +74,11 @@ public void preprocesssentence()
 		sumbasic();
 		sumfocus();
 		mutualinfo();
+		ner();
+		
 		 System.out.println(sentence+" "+absoluteposition+" "+numberofcontentwords+" "+unigramoverlap+" "+sumbasic+" "+sumfocus+" "+mutualinfo);
 		 try {
-			bw.write("0"+" qid:"+topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" #"+sentence);
+			bw.write("0"+" qid:"+topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" 7:"+location+" 8:"+duration+" 9:"+time+" 10:"+money+" 11:"+date+" #"+sentence);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -78,10 +98,11 @@ public void preprocesssentence()
 		sumbasic();
 		sumfocus();
 		mutualinfo();
+		ner();
 		 System.out.println(sentence+" "+absoluteposition+" "+numberofcontentwords+" "+unigramoverlap+" "+sumbasic+" "+sumfocus+" "+mutualinfo);
 		// System.out.println(rankmap);
 		 try {if(rankmap.containsKey(sentence))//why wont a sentence be in this rankmap?
-			bw.write(rankmap.get(sentence).rank+" qid:"+rankmap.get(sentence).topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" #"+sentence);
+			 bw.write(rankmap.get(sentence).rank+" qid:"+rankmap.get(sentence).topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" 7:"+location+" 8:"+duration+" 9:"+time+" 10:"+money+" 11:"+date+" #"+sentence);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -168,6 +189,27 @@ public void preprocesssentence()
 				 mutualinfo=mutualinfo+pij;
 		}
 		}
+	}
+	public void ner()
+	{
+		for (CoreLabel token: sentencecoremap.get(TokensAnnotation.class)) {
+	       
+	       
+	        // this is the NER label of the token
+	        String ne = token.get(NamedEntityTagAnnotation.class); 
+	        if(ne=="LOCATION")
+	        	location=1.0;
+			if(ne=="DATE")
+	        	date=1.0;
+	        if(ne=="TIME")
+	        	time=1.0;
+	        if(ne=="DURATION")
+	        	duration=1.0;	
+	        if(ne=="MONEY")
+	        	money=1.0;
+	       
+	       
+	      }
 	}
 	
 }
