@@ -11,12 +11,15 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
-class CopyOflearningscoresortmulti
+class learningscoresortmultiavg
 {static List<sentencescore> ranking=new ArrayList<sentencescore>();
-private static double lamda=0.35;
+private static double lamda=0.25;
 public static double jc_check(String ta,String tb)
 { HashSet<String> ha = null;
 try {
@@ -113,7 +116,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 	}
 	
 	BufferedWriter bw2=new BufferedWriter(fw2);
-		File f1=new File("/home/bhargava/Documents/scorefiles/iranbeginscorequeryonly/"+folders);
+		File f1=new File("/home/bhargava/Documents/scorefiles/iranbeginqueryavg/"+folders);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -204,26 +207,113 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 		}
 	
 	public static void main(String args[])
-	{  	
-		String scorepath="/home/bhargava/Documents/scorefiles/iranbeginscorequeryonly";
+	{  	average();
+		String scorepath="/home/bhargava/Documents/scorefiles/iranbeginqueryavg";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));
 		
 		for(int i=0;i<folders.length;i++)
-		{if(folders[i].endsWith(".txt"))
 		{
+		
 			System.out.println(folders[i]);
 		
 			process(folders[i]);
+		
+		}
+	}
+	private static void average() {
+		// TODO Auto-generated method stub
+		String scorepath="/home/bhargava/Documents/iranbeginfeaturesqueryonly";
+		File scores=new File(scorepath);
+		String[] folders=scores.list();
+		Collections.sort(Arrays.asList(folders));
+		
+		for(int i=0;i<folders.length;i++)
+		{//if(folders[i].endsWith(".txt"))
+		{HashMap<Integer,scorefile> sflist=new HashMap<Integer,scorefile>();
+			System.out.println(folders[i]);
+		for(int j=0;j<10;j++)
+		{int filenum=j+1;
+			File f1=new File("/home/bhargava/Documents/scorefiles/iranbeginscorequeryonly/"+folders[i]+filenum);
+		FileReader fr = null;
+		try {
+			fr = new FileReader(f1);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BufferedReader br=new BufferedReader(fr);
+			
+			String line=null;
+			
 			try {
-				System.in.read();
+				while((line=br.readLine())!=null)
+				{String[] linessplit=line.split("\t");
+				scorefile sf=new scorefile();
+				sf.topic=Integer.parseInt(linessplit[0]);
+				sf.pos=Integer.parseInt(linessplit[1]);
+				
+					if(sflist.containsKey(sf.pos))
+					{
+						sf.score=sflist.get(sf.pos).score+Double.parseDouble(linessplit[2]);
+						
+					}
+					else
+					{
+						sf.score=Double.parseDouble(linessplit[2]);
+					}
+						
+					sflist.put(sf.pos, sf);
+					
+						
+					
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		
+			try {
+				br.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}}	File f=new File("/home/bhargava/Documents/scorefiles/iranbeginqueryavg/"+folders[i]);
+		FileWriter fw=null;
+		try {
+			 fw=new FileWriter(f);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		BufferedWriter bw=new BufferedWriter(fw);
+		
+		for(Entry<Integer, scorefile> entry: sflist.entrySet())
+		{double score=entry.getValue().score/10;
+			try {
+				bw.write(entry.getValue().topic+"\t"+entry.getValue().pos+"\t"+score);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				bw.newLine();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
+		try {
+			bw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+			//process(folders[i]);
 		}
 	}
 }
-	
+}

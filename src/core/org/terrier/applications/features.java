@@ -45,7 +45,7 @@ private static int topic=0;
 	}
 	static void topicpreprocess()
 	{
-		String topic="2012 East Azerbaijan earthquakes";
+		String topic="iran earthquake";
 		try {
 			topiccontent=stemmingandstopwordremovaltry.content(topic);
 		} catch (IOException e) {

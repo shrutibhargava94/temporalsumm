@@ -16,7 +16,7 @@ import java.util.Map;
 import org.apache.commons.net.ntp.TimeStamp;
 
 class sustry
-{static String scorepath="/home/bhargava/Documents/iranbeginresults/";
+{static String scorepath="/home/bhargava/Documents/iranbeginresultsquery/";
 static String initsummary="";
 static ArrayList<String> updatesummary=new ArrayList<String>();
 public static double jc_check(String ta,String tb)
@@ -169,8 +169,8 @@ public static double infogain_check(ArrayList<String> y,ArrayList<String> x)
 				flag=0;
 				for(int i=0;i<updatesummary.size();i++)
 				{
-					//if(jc_check(updatesummary.get(i), line)>0.99)
-					if(infogain_check(stemmingandstopwordremovaltry.content(line), stemmingandstopwordremovaltry.content(updatesummary.get(i)))<0.4)
+					if(jc_check(updatesummary.get(i), line)>0.25)
+					//if(infogain_check(stemmingandstopwordremovaltry.content(line), stemmingandstopwordremovaltry.content(updatesummary.get(i)))<0.4)
 					flag=1;
 				}
 				if(flag!=1)

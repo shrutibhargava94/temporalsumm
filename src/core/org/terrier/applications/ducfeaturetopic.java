@@ -129,7 +129,7 @@ HashMap<String,Double> hourfreq;
 	{
 		
 		try {
-			topiccontent=stemmingandstopwordremovaltry.content(topic);
+			topiccontent=stemmingandstopwordremovaltry.content(query);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -19,7 +19,7 @@ static String path="/home/bhargava/Documents/iranbeginnewspapercontentexcep/";
 HashMap<String,Double> hourfreq;
 	public void computefeaturesforhour(String string, String innerfolders, ArrayList<String> querycontent, HashMap<String, Double> topicweight, int topic) {
 		// TODO Auto-generated method stub
-		File f=new File("/home/bhargava/Documents/iranbeginfeatures/trecfeaturesner"+innerfolders+".txt");
+		File f=new File("/home/bhargava/Documents/iranbeginfeaturesqueryonly/trecfeaturesner"+innerfolders+".txt");
 		FileWriter fw=null;
 		try {
 			 fw=new FileWriter(f);

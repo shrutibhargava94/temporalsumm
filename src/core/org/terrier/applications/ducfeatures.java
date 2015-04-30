@@ -19,7 +19,7 @@ static String freqhashmappath="/home/bhargava/Documents/firstsetuptry/terrierfre
 static HashMap<String,sentencerank> rankmap=new HashMap<String, sentencerank>();
 static HashMap<String,Double> topicweight;
 	public static void main(String args[])
-	{File f=new File("/home/bhargava/Documents/firstsetuptry/ducfeatures.txt");
+	{File f=new File("/home/bhargava/Documents/firstsetuptry/ducfeaturesqueryonly.txt");
 	FileWriter fw=null;
 	try {
 		 fw=new FileWriter(f);

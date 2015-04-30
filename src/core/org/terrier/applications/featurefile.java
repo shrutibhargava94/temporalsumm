@@ -43,8 +43,8 @@ class featurefile
 		  sentencepos=0;
 		    for(CoreMap sentence: sentences) {
 		    	featuresentence sent=new featuresentence(sentencepos,sentence,querycontent,hourfreq,topicweight,freq,bw,topic,rankmap);
-		    	sent.computesentencefeatures();
-		    	//sent.computesentencefeaturestraining();
+		    	//sent.computesentencefeatures();
+		    	sent.computesentencefeaturestraining();
 		    	sentencepos++;
 		    }
 		    
