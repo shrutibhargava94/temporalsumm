@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -16,7 +18,7 @@ import java.util.TimeZone;
 
 class timestamp
 {public static void main(String args[])
-	{File f1=new File("/home/bhargava/Downloads/TS13-TrainingData/training-topics-nuggets.tsv");
+	{/*File f1=new File("/home/bhargava/Downloads/TS13-TrainingData/training-topics-nuggets.tsv");
 	FileReader fr = null;
 	try {
 		fr = new FileReader(f1);
@@ -50,7 +52,7 @@ class timestamp
 	                + ":" + cal.get(Calendar.MINUTE)
 	                + ":" + cal.get(Calendar.SECOND)
 	                + (cal.get(Calendar.AM_PM)==0?"AM":"PM")
-	                );*/
+	                );
 	      //  System.out.println(milliseconds);
 	        SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	        
@@ -69,13 +71,28 @@ class timestamp
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
-	}
+	}*/
 	//Date date=new Date("2012-08-11-13");
 	//String s="2012-08-11 13:00:00";
 	//System.out.println(Timestamp.valueOf(s).getTime());
 			//Calendar.set(Calendar.DAY_OF_MONTH,11);
 	//Timestamp ts=new Timestamp("2012-08-11 13:00:00");
 	//System.out.println(ts.getTime());
+	
+	
+	String timehour="2012-02-24-00";
+	
+	DateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH");
+	
+	format.setTimeZone(TimeZone.getTimeZone("UTC"));
+	Date date = null;
+	try {
+		date = format.parse(timehour);
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	System.out.println(date.getTime()/1000);
 	
 	}
 	

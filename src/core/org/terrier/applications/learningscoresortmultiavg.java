@@ -7,14 +7,20 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Map.Entry;
 
 class learningscoresortmultiavg
@@ -46,7 +52,7 @@ double jc=(double)hac.size()/(double)hac1.size();
 return jc;
 
 }
-public static void mmr(List<sentencescore> s, BufferedWriter bw2)
+public static void mmr(List<sentencescore> s, BufferedWriter bw2, String folders)
 {
 	ArrayList<sentencescore> selected=new ArrayList<sentencescore>();
     selected.add(s.get(0));
@@ -85,6 +91,20 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
     sel.sentence=s.get(pos).sentence;
     sel.topic=s.get(pos).topic;
     selected.add(sel);
+    String[] timehour=folders.split("trecfeaturesner");
+String time=timehour[1].substring(0,timehour[1].indexOf("."));
+	DateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH");
+	
+	format.setTimeZone(TimeZone.getTimeZone("UTC"));
+	Date date = null;
+	try {
+		date = format.parse(time);
+	} catch (ParseException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	System.out.println(date.getTime()/1000);
+    
     System.out.println(sel.sentence);
     try {
 		bw2.write(sel.sentence);
@@ -96,7 +116,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
     }
 }
 	public static void process(String folders)
-	{File f=new File("/home/bhargava/Documents/iranbeginresultsquery/rankedner"+folders);
+	{File f=new File("/home/bhargava/Documents/afghanistan/afghanresults/rankedner"+folders);
 	FileWriter fw=null;
 	try {
 		 fw=new FileWriter(f);
@@ -106,7 +126,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 	}
 	
 	BufferedWriter bw=new BufferedWriter(fw);
-	File f3=new File("/home/bhargava/Documents/iranbeginresultsquery/rankedmmrner"+folders);
+	File f3=new File("/home/bhargava/Documents/afghanistan/afghanresults/rankedmmrner"+folders);
 	FileWriter fw2=null;
 	try {
 		 fw2=new FileWriter(f3);
@@ -116,7 +136,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 	}
 	
 	BufferedWriter bw2=new BufferedWriter(fw2);
-		File f1=new File("/home/bhargava/Documents/scorefiles/iranbeginqueryavg/"+folders);
+		File f1=new File("/home/bhargava/Documents/afghanistan/scorefiles/afghanscoresavg/"+folders);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -125,7 +145,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 			e.printStackTrace();
 		}
 		BufferedReader br=new BufferedReader(fr);
-		File f2=new File("/home/bhargava/Documents/iranbeginfeaturesqueryonly/"+folders);
+		File f2=new File("/home/bhargava/Documents/afghanistan/afghanfeatures/"+folders);
 		FileReader fr1 = null;
 		try {
 			fr1 = new FileReader(f2);
@@ -144,9 +164,11 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 				ss.topic=Integer.parseInt(score[0]);
 				ss.score=Double.parseDouble(score[2]);
 				String line1=br1.readLine();
-				//System.out.println(num);
-				String[] sent=line1.split("#");
-				ss.sentence=sent[1];
+				//System.out.println(line1);
+				String[] sent1=line1.split("#");
+				if(line1.endsWith("#"))
+					continue;
+				ss.sentence=sent1[1];
 				ranking.add(ss);
 				num++;
 				}
@@ -163,7 +185,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 		    		return s1.topic-s2.topic;
 		    	}
 		    });
-			mmr(ranking,bw2);
+			mmr(ranking,bw2,folders);
 			try {
 				bw2.close();
 			} catch (IOException e1) {
@@ -208,7 +230,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 	
 	public static void main(String args[])
 	{  	average();
-		String scorepath="/home/bhargava/Documents/scorefiles/iranbeginqueryavg";
+		String scorepath="/home/bhargava/Documents/afghanistan/scorefiles/afghanscoresavg";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));
@@ -224,7 +246,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 	}
 	private static void average() {
 		// TODO Auto-generated method stub
-		String scorepath="/home/bhargava/Documents/iranbeginfeaturesqueryonly";
+		String scorepath="/home/bhargava/Documents/afghanistan/afghanfeatures";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));
@@ -235,7 +257,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 			System.out.println(folders[i]);
 		for(int j=0;j<10;j++)
 		{int filenum=j+1;
-			File f1=new File("/home/bhargava/Documents/scorefiles/iranbeginscorequeryonly/"+folders[i]+filenum);
+			File f1=new File("/home/bhargava/Documents/afghanistan/scorefiles/afghanscores/"+folders[i]+filenum);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -279,7 +301,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}}	File f=new File("/home/bhargava/Documents/scorefiles/iranbeginqueryavg/"+folders[i]);
+			}}	File f=new File("/home/bhargava/Documents/afghanistan/scorefiles/afghanscoresavg/"+folders[i]);
 		FileWriter fw=null;
 		try {
 			 fw=new FileWriter(f);

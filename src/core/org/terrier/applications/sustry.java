@@ -16,7 +16,7 @@ import java.util.Map;
 import org.apache.commons.net.ntp.TimeStamp;
 
 class sustry
-{static String scorepath="/home/bhargava/Documents/iranbeginresultsquery/";
+{static String scorepath="/home/bhargava/Documents/afghanistan/afghanresults/";
 static String initsummary="";
 static ArrayList<String> updatesummary=new ArrayList<String>();
 public static double jc_check(String ta,String tb)

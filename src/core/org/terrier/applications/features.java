@@ -10,7 +10,7 @@ import java.util.HashMap;
 class features
 {static boolean train=false;
 //static String path="/home/bhargava/Documents/firstsetuptry/newspapercontent1/";
-static String freqhashmappath="/home/bhargava/Documents/iranbeginterrierfreqstat/";
+static String freqhashmappath="/home/bhargava/Documents/afghanistan/afghanterrierfreqstat/";
 static HashMap<String,Double> topicweight;
 private static int topic=0;
 	public static void main(String args[])
@@ -35,7 +35,7 @@ private static int topic=0;
 	private static ArrayList<String> topiccontent;
 	static void querypreprocess()
 	{
-		String query="iran earthquake";
+		String query="quran burning protests";
 		try {
 			querycontent=stemmingandstopwordremovaltry.content(query);
 		} catch (IOException e) {
@@ -45,7 +45,7 @@ private static int topic=0;
 	}
 	static void topicpreprocess()
 	{
-		String topic="iran earthquake";
+		String topic="quran burning protests";
 		try {
 			topiccontent=stemmingandstopwordremovaltry.content(topic);
 		} catch (IOException e) {

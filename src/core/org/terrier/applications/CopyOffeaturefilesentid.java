@@ -1,7 +1,10 @@
 package org.terrier.applications;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,12 +19,12 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
 
-class featurefile
+class CopyOffeaturefilesentid
 {int sentencepos;
 	public void computefeaturesforfile(String string, String files, ArrayList<String> querycontent, HashMap<String, Double> hourfreq, HashMap<String, Double> topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic, HashMap<String, sentencerank> rankmap) {
 		// TODO Auto-generated method stub
 		File article=new File(string+"/"+files);
-		try {
+		/*try {
 			Document doc = Jsoup.parse(article, "UTF-8");
 			String text = doc.body().text();
 			Properties props = new Properties();
@@ -48,6 +51,27 @@ class featurefile
 		    	sentencepos++;
 		    }
 		    
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
+		
+		FileReader fr = null;
+		try {
+			fr = new FileReader(article);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		BufferedReader articlebr=new BufferedReader(fr);
+		String line="";
+		try {int sentencepos=0;
+			while((line=articlebr.readLine())!=null)
+			{
+				CopyOffeaturesentencesentid sent=new CopyOffeaturesentencesentid(sentencepos,line,querycontent,hourfreq,topicweight,freq,bw,topic,rankmap,files);
+		    	sent.computesentencefeatures();
+		    	sentencepos++;
+			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -171,7 +171,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 			{
 				//System.out.println(i+" "+ranking.get(i).topic+" "+ranking.get(i).sentence);
 				try {
-					bw.write(i+" "+ranking.get(i).topic+" "+ranking.get(i).sentence);
+					bw.write(i+"\t"+ranking.get(i).topic+"\t"+ranking.get(i).sentence+"\t"+ranking.get(i).score);
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -216,12 +216,7 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2)
 			System.out.println(folders[i]);
 		
 			process(folders[i]);
-			try {
-				System.in.read();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 		}
 		}
 	}
