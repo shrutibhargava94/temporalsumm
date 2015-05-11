@@ -126,6 +126,16 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	}
 	
 	BufferedWriter bw=new BufferedWriter(fw);
+	{File f4=new File("/home/bhargava/Documents/afghanistan/afghanresults/rankedeval"+folders);
+	FileWriter fw4=null;
+	try {
+		 fw4=new FileWriter(f4);
+	} catch (IOException e1) {
+		// TODO Auto-generated catch block
+		e1.printStackTrace();
+	}
+	
+	BufferedWriter bw4=new BufferedWriter(fw4);
 	File f3=new File("/home/bhargava/Documents/afghanistan/afghanresults/rankedmmrner"+folders);
 	FileWriter fw2=null;
 	try {
@@ -165,10 +175,26 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 				ss.score=Double.parseDouble(score[2]);
 				String line1=br1.readLine();
 				//System.out.println(line1);
+				
 				String[] sent1=line1.split("#");
+			//	String[] attributes=sent1[0].split(regex);
 				if(line1.endsWith("#"))
 					continue;
 				ss.sentence=sent1[1];
+				String[] timehour=folders.split("trecfeaturesner");
+				String time=timehour[1].substring(0,timehour[1].indexOf("."));
+					DateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH");
+					
+					format.setTimeZone(TimeZone.getTimeZone("UTC"));
+					Date date = null;
+					try {
+						date = format.parse(time);
+					} catch (ParseException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				//	System.out.println(date.getTime()/1000);
+				System.out.println(sent1[1]+"\t"+date.getTime()/1000+"\t"+ss.score);
 				ranking.add(ss);
 				num++;
 				}
@@ -185,7 +211,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 		    		return s1.topic-s2.topic;
 		    	}
 		    });
-			mmr(ranking,bw2,folders);
+		//	mmr(ranking,bw2,folders);
 			try {
 				bw2.close();
 			} catch (IOException e1) {
@@ -193,10 +219,24 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 				e1.printStackTrace();
 			}
 			for(int i=0;i<ranking.size();i++)
-			{
+			{String[] timehour=folders.split("trecfeaturesner");
+			String time=timehour[1].substring(0,timehour[1].indexOf("."));
+			DateFormat format=new SimpleDateFormat("yyyy-MM-dd-HH");
+			
+			format.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date date = null;
+			try {
+				date = format.parse(time);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 				//System.out.println(i+" "+ranking.get(i).topic+" "+ranking.get(i).sentence);
 				try {
 					bw.write(i+" "+ranking.get(i).topic+" "+ranking.get(i).sentence);
+					System.out.println(ranking.get(i).sentence+"\t"+(date.getTime()/1000+3600)+"\t"+ranking.get(i).score);
+					bw4.write(ranking.get(i).sentence+"\t"+(date.getTime()/1000+3600)+"\t"+ranking.get(i).score);
+					bw4.newLine();
 				} catch (IOException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -210,6 +250,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			}
 			try {
 				bw.close();
+				bw4.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -226,6 +267,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+	}
 		}
 	
 	public static void main(String args[])

@@ -12,7 +12,7 @@ class features
 //static String path="/home/bhargava/Documents/firstsetuptry/newspapercontent1/";
 static String freqhashmappath="/home/bhargava/Documents/afghanistan/afghanterrierfreqstat/";
 static HashMap<String,Double> topicweight;
-private static int topic=0;
+private static int topic=16;
 	public static void main(String args[])
 	{
 		

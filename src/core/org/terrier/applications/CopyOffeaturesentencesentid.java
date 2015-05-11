@@ -84,7 +84,7 @@ public void preprocesssentence()
 		
 		 System.out.println(sentence+" "+absoluteposition+" "+numberofcontentwords+" "+unigramoverlap+" "+sumbasic+" "+sumfocus+" "+mutualinfo);
 		 try {String sentenceescaped=Utils.quote(sentence);
-			bw.write("0"+" qid:"+topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" 7:"+location+" 8:"+duration+" 9:"+time+" 10:"+money+" 11:"+date+" #"+docid+"\t"+sentence);
+			bw.write("0"+" qid:"+topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" 7:"+location+" 8:"+duration+" 9:"+time+" 10:"+money+" 11:"+date+" #"+topic+"\t"+"l3s"+"\t"+"l3s1"+"\t"+docid+"\t"+(int)absoluteposition+"\t"+sentence);
 			//bw.write(topic+","+absoluteposition+","+numberofcontentwords+","+unigramoverlap+","+sumbasic+","+sumfocus+","+mutualinfo+","+location+","+duration+","+time+","+money+","+date);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
