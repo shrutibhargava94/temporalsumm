@@ -252,65 +252,67 @@ public class TRECIndexing {
 	 * @param args the command line arguments.
 	 */
 	public static void main(String[] args)
-	{System.out.println("heloo world");
+	{
 	System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
-	
+    //reading from each hour folder in the sentencefolder to be indexed
 	Path dir = Paths.get("/home/bhargava/Documents/afghanistan/afghansentence/");
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-	    for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/afghanistan/afghanterrierindex/"+file.getFileName().toString());
-	    Files.createDirectory(dirfolder);
-	  ApplicationSetup.setProperty("terrier.index.path", dirfolder.toString());
-	ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/afghanistan/afghanlistforterrier/"+file.getFileName().toString());
-	 ApplicationSetup.loadCommonProperties();
+		for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/afghanistan/afghanterrierindex/"+file.getFileName().toString());//path for storing index
+		Files.createDirectory(dirfolder);
+		ApplicationSetup.setProperty("terrier.index.path", dirfolder.toString());
+		ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/afghanistan/afghanlistforterrier/"+file.getFileName().toString());//path for list for terrier indexing
+		ApplicationSetup.loadCommonProperties();
 		long startTime = System.currentTimeMillis();
 		TRECIndexing t = new TRECIndexing();
-		
+
 		t.index();
-		 InteractiveQuerying iq=new InteractiveQuerying();
-	        iq.processQuery("q1","+quran +burning +protests", 1.0);
-	       //result file name and docid in this file 
-	       Scanner in=new Scanner(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));
-	      // BufferedWriter bw=new BufferedWriter(new FileWriter(new File("home/bhargava/Documents/firstsetuptry/frequency)))
-	        Index index = Index.createIndex();
-	        PostingIndex<?> di = index.getDirectIndex();
-	        DocumentIndex doi = index.getDocumentIndex();
-	        Lexicon<String> lex = index.getLexicon();
-	        Path dirfolderfreq = Paths.get("/home/bhargava/Documents/afghanistan/afghanterrierfreqstat/"+file.getFileName().toString());
-			try {
-				Files.createDirectory(dirfolderfreq);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				System.out.println("Unable to create directory");
-				e.printStackTrace();
-			}
-	        while(in.hasNext())
-	        {String filename=in.next();
-	        System.out.println(filename);
-	        
-	       String[] ar=filename.split("/");
-	        int docid = in.nextInt(); //docids are 0-based
-	        HashMap<String,Double> freq=new HashMap<String,Double>();
-	        IterablePosting postings = di.getPostings((BitIndexPointer)doi.getDocumentEntry(docid));
-	        while (postings.next() != IterablePosting.EOL) {
-	        	Map.Entry<String,LexiconEntry> lee = lex.getLexiconEntry(postings.getId());
-	        	//System.out.println(lee.getKey() + " " + postings.getFrequency());
-	        	freq.put(lee.getKey(),(double) postings.getFrequency());
-	        }
-	        FileOutputStream fout = new FileOutputStream(dirfolderfreq.toString()+"/"+ar[ar.length-1]);
-			ObjectOutputStream oos = new ObjectOutputStream(fout);   
-			oos.writeObject(freq);
-			oos.close();
-	        
-	        }
+		InteractiveQuerying iq=new InteractiveQuerying();
+		iq.processQuery("q1","+quran +burning +protests", 1.0);//change query according to the event
+		//result file name and docid in this file 
+		Scanner in=new Scanner(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));//path for taking things from interactive query
+		// BufferedWriter bw=new BufferedWriter(new FileWriter(new File("home/bhargava/Documents/firstsetuptry/frequency)))
+		Index index = Index.createIndex();
+		PostingIndex<?> di = index.getDirectIndex();
+		DocumentIndex doi = index.getDocumentIndex();
+		Lexicon<String> lex = index.getLexicon();
+		Path dirfolderfreq = Paths.get("/home/bhargava/Documents/afghanistan/afghanterrierfreqstat/"+file.getFileName().toString());//path for saving statistics to
+		try {
+			Files.createDirectory(dirfolderfreq);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			System.out.println("Unable to create directory");
+			e.printStackTrace();
+		}
+		//saving file wise frequency statistics using a map object stored in a file
+		while(in.hasNext())
+		{String filename=in.next();
+		System.out.println(filename);
+
+		String[] ar=filename.split("/");
+		int docid = in.nextInt(); //docids are 0-based
+		HashMap<String,Double> freq=new HashMap<String,Double>();
+		IterablePosting postings = di.getPostings((BitIndexPointer)doi.getDocumentEntry(docid));
+		while (postings.next() != IterablePosting.EOL) {
+			Map.Entry<String,LexiconEntry> lee = lex.getLexiconEntry(postings.getId());
+			//System.out.println(lee.getKey() + " " + postings.getFrequency());
+			freq.put(lee.getKey(),(double) postings.getFrequency());
+		}
+		//writng hashmap
+		FileOutputStream fout = new FileOutputStream(dirfolderfreq.toString()+"/"+ar[ar.length-1]);
+		ObjectOutputStream oos = new ObjectOutputStream(fout);   
+		oos.writeObject(freq);
+		oos.close();
+
+		}
 		long endTime = System.currentTimeMillis();
 		if(logger.isInfoEnabled())
 			logger.info("Elapsed time="+((endTime-startTime)/1000.0D));
-	    }
+		}
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	} 
 	}
-	
-	
+
+
 }

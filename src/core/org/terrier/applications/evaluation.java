@@ -20,7 +20,7 @@ String line;
 //System.out.println("here");
 update_trec=new ArrayList<updateattributes>();
 	try {
-		 updatetrecread = new BufferedReader(new FileReader(new File("/home/bhargava/Downloads/updates_sampled (3).tsv")));
+		 updatetrecread = new BufferedReader(new FileReader(new File("/home/bhargava/Downloads/updates_sampled (4).tsv")));
 	} catch (FileNotFoundException e) {
 		// TODO Auto-generated catch block
 		e.printStackTrace();
@@ -97,7 +97,7 @@ public static void readtrecmatches()
 		}
 }
 	public static void main(String args[])
-	{   readtrecupdate();
+	{   readtrecupdate();int count=0;
 	readtrecmatches();
 	BufferedWriter excep=null;
 	try {
@@ -161,8 +161,10 @@ public static void readtrecmatches()
 							if(checkintrecupdate(u.uid)!=-1)
 							{int updatespos=checkintrecupdate(u.uid);
 								System.out.println("found"+ update_trec.get(updatespos).utext);
+							//	System.in.read();
 								updates.write(update_trec.get(updatespos).qid+"\t"+update_trec.get(updatespos).uid+"\t"+update_trec.get(updatespos).did+"\t"+update_trec.get(updatespos).sid+"\t"+update_trec.get(updatespos).ulength+"\t"+update_trec.get(updatespos).dupid+"\t"+update_trec.get(updatespos).utext);
 								updates.newLine();
+								count++;
 								int matchpos=findinmatches(u.uid);
 								if(matchpos!=-1)
 								{System.out.println(match_trec.get(matchpos));
@@ -193,7 +195,7 @@ public static void readtrecmatches()
 				
 			}
 		}
-	try {
+	try {System.out.println(count);
 		System.in.read();
 	} catch (IOException e) {
 		// TODO Auto-generated catch block

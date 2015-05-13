@@ -106,7 +106,7 @@ public static double infogain_check(ArrayList<String> y,ArrayList<String> x)
 		Collections.sort(Arrays.asList(folders));
 		
 		for(int i=0;i<folders.length;i++)
-		{if(!folders[i].contains("mmr"))
+		{if(folders[i].contains("mmr"))
 		{
 			System.out.println(folders[i]);
 			if(i==0)
