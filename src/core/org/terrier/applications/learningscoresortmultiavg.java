@@ -218,6 +218,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
+			//sentencetermspace.getlearningtorankresults(ranking);
 			for(int i=0;i<ranking.size();i++)
 			{String[] timehour=folders.split("trecfeaturesner");
 			String time=timehour[1].substring(0,timehour[1].indexOf("."));
