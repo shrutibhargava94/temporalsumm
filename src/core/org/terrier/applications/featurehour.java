@@ -14,12 +14,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 class featurehour
-{public static String hashmappath="/home/bhargava/Documents/afghanistan/afghanterrierfreqstat/";
-static String path="/home/bhargava/Documents/afghanistan/afghansentence/";
+{public static String hashmappath="/home/bhargava/afghanterrierfreqstat/";
+static String path="/home/bhargava/afghansentence/";
 HashMap<String,Double> hourfreq;
 	public void computefeaturesforhour(String string, String innerfolders, ArrayList<String> querycontent, HashMap<String, Double> topicweight, int topic) {
 		// TODO Auto-generated method stub
-		File f=new File("/home/bhargava/Documents/afghanistan/afghanfeatures/trecfeaturesner"+innerfolders+".txt");
+		File f=new File("/home/bhargava/afghanfeatures/trecfeaturesner"+innerfolders+".txt");
 		FileWriter fw=null;
 		try {
 			 fw=new FileWriter(f);

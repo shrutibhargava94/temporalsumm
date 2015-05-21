@@ -255,12 +255,12 @@ public class TRECIndexing {
 	{
 	System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
     //reading from each hour folder in the sentencefolder to be indexed
-	Path dir = Paths.get("/home/bhargava/Documents/afghanistan/afghansentence/");
+	Path dir = Paths.get("/home/bhargava/afghansentence/");
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-		for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/afghanistan/afghanterrierindex/"+file.getFileName().toString());//path for storing index
+		for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/afghanterrierindex/"+file.getFileName().toString());//path for storing index
 		Files.createDirectory(dirfolder);
 		ApplicationSetup.setProperty("terrier.index.path", dirfolder.toString());
-		ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/afghanistan/afghanlistforterrier/"+file.getFileName().toString());//path for list for terrier indexing
+		ApplicationSetup.setProperty("collection.spec", "/home/bhargava/afghanlistforterrier/"+file.getFileName().toString());//path for list for terrier indexing
 		ApplicationSetup.loadCommonProperties();
 		long startTime = System.currentTimeMillis();
 		TRECIndexing t = new TRECIndexing();
@@ -275,7 +275,7 @@ public class TRECIndexing {
 		PostingIndex<?> di = index.getDirectIndex();
 		DocumentIndex doi = index.getDocumentIndex();
 		Lexicon<String> lex = index.getLexicon();
-		Path dirfolderfreq = Paths.get("/home/bhargava/Documents/afghanistan/afghanterrierfreqstat/"+file.getFileName().toString());//path for saving statistics to
+		Path dirfolderfreq = Paths.get("/home/bhargava/afghanterrierfreqstat/"+file.getFileName().toString());//path for saving statistics to
 		try {
 			Files.createDirectory(dirfolderfreq);
 		} catch (IOException e) {

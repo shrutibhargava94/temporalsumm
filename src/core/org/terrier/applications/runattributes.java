@@ -9,4 +9,5 @@ class runattributes
 	String sid;
 	String timestamp;
 	String confidence;
+	String sent;
 }

@@ -7,6 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -68,8 +71,8 @@ public static void mmr(List<sentencescore> s, BufferedWriter bw2, String folders
     		max=-9999;
     			
     		for(int j=1;j<selected.size();j++)
-    		{
-    			double jc=jc_check(s.get(i).sentence,selected.get(j).sentence);
+    		{System.out.println(s.get(i).sentence);
+    			double jc=jc_check(Arrays.asList(s.get(i).sentence.split("\t")).get(5),Arrays.asList(s.get(j).sentence.split("\t")).get(5));
     			if(jc>max)
     			{
     				max=jc;
@@ -107,7 +110,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
     
     System.out.println(sel.sentence);
     try {
-		bw2.write(sel.sentence);
+		bw2.write(sel.sentence+"\t"+(date.getTime()/1000+3600)+"\t"+sel.score);
 		bw2.newLine();
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
@@ -116,7 +119,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
     }
 }
 	public static void process(String folders)
-	{File f=new File("/home/bhargava/Documents/afghanistan/afghanresults/rankedner"+folders);
+	{File f=new File("/home/bhargava/afghanresults/rankedner"+folders);
 	FileWriter fw=null;
 	try {
 		 fw=new FileWriter(f);
@@ -126,7 +129,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	}
 	
 	BufferedWriter bw=new BufferedWriter(fw);
-	{File f4=new File("/home/bhargava/Documents/afghanistan/afghanresults/rankedeval"+folders);
+	{File f4=new File("/home/bhargava/afghanresults/rankedeval"+folders);
 	FileWriter fw4=null;
 	try {
 		 fw4=new FileWriter(f4);
@@ -136,7 +139,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	}
 	
 	BufferedWriter bw4=new BufferedWriter(fw4);
-	File f3=new File("/home/bhargava/Documents/afghanistan/afghanresults/rankedmmrner"+folders);
+	File f3=new File("/home/bhargava/afghanresults/rankedmmrner"+folders);
 	FileWriter fw2=null;
 	try {
 		 fw2=new FileWriter(f3);
@@ -146,7 +149,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	}
 	
 	BufferedWriter bw2=new BufferedWriter(fw2);
-		File f1=new File("/home/bhargava/Documents/afghanistan/scorefiles/afghanscoresavg/"+folders);
+		File f1=new File("/home/bhargava/afghanscoresavg/"+folders);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -155,7 +158,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			e.printStackTrace();
 		}
 		BufferedReader br=new BufferedReader(fr);
-		File f2=new File("/home/bhargava/Documents/afghanistan/afghanfeatures/"+folders);
+		File f2=new File("/home/bhargava/afghanfeatures/"+folders);
 		FileReader fr1 = null;
 		try {
 			fr1 = new FileReader(f2);
@@ -180,6 +183,8 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			//	String[] attributes=sent1[0].split(regex);
 				if(line1.endsWith("#"))
 					continue;
+			if(sent1[1].split("\t").length<6)
+				continue;
 				ss.sentence=sent1[1];
 				String[] timehour=folders.split("trecfeaturesner");
 				String time=timehour[1].substring(0,timehour[1].indexOf("."));
@@ -211,7 +216,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 		    		return s1.topic-s2.topic;
 		    	}
 		    });
-		//	mmr(ranking,bw2,folders);
+			mmr(ranking,bw2,folders);
 			try {
 				bw2.close();
 			} catch (IOException e1) {
@@ -273,34 +278,44 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	
 	public static void main(String args[])
 	{  	average();
-		String scorepath="/home/bhargava/Documents/afghanistan/scorefiles/afghanscoresavg";
+		String scorepath="/home/bhargava/afghanscoresavg";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));
 		
 		for(int i=0;i<folders.length;i++)
+		{Path path=Paths.get(scorepath+"/"+folders[i]);
+		long filesize=0;
+		try {
+			filesize=Files.size(path);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if(filesize>0)
 		{
-		
 			System.out.println(folders[i]);
 		
 			process(folders[i]);
+		}
 		
 		}
 	}
 	private static void average() {
 		// TODO Auto-generated method stub
-		String scorepath="/home/bhargava/Documents/afghanistan/afghanfeatures";
+		String scorepath="/home/bhargava/afghanfeatures";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));
 		
 		for(int i=0;i<folders.length;i++)
 		{//if(folders[i].endsWith(".txt"))
+			
 		{HashMap<Integer,scorefile> sflist=new HashMap<Integer,scorefile>();
 			System.out.println(folders[i]);
 		for(int j=0;j<10;j++)
 		{int filenum=j+1;
-			File f1=new File("/home/bhargava/Documents/afghanistan/scorefiles/afghanscores/"+folders[i]+filenum);
+			File f1=new File("/home/bhargava/afghanscores/"+folders[i]+filenum);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -344,7 +359,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}}	File f=new File("/home/bhargava/Documents/afghanistan/scorefiles/afghanscoresavg/"+folders[i]);
+			}}	File f=new File("/home/bhargava/afghanscoresavg/"+folders[i]);
 		FileWriter fw=null;
 		try {
 			 fw=new FileWriter(f);

@@ -6,10 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,15 +25,12 @@ import lsh.minhash.JaccardDocument;
 import lsh.minhash.MinHashLSH;
 import lsh.minhash.MinHashLSH.RankedDocument;
 
-class sentencetermspace
+class CopyOflshpart
 {static HashSet<String> termspace;
-private static List<runattributes> rankedsentences;
-private static List<runattributes> setoftoprankedsentences;
-static ArrayList<String> sentences;
-private static ArrayList<String> ranking;
-private static ArrayList<runattributes> score;
+public static LinkedHashMap<String,runattributes> rankedsent;
 public static void readfileandtermspace(String filename)
 {termspace=new HashSet<String>();
+rankedsent=new LinkedHashMap<String, runattributes>();
 	BufferedReader br=null;
 	try {
 		br=new BufferedReader(new FileReader(new File(filename)));
@@ -40,8 +38,7 @@ public static void readfileandtermspace(String filename)
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-	ranking =new ArrayList<String>();
-	score=new ArrayList<runattributes>();
+	
 	String line="";
 	try {
 		while((line=br.readLine())!=null)
@@ -51,9 +48,8 @@ public static void readfileandtermspace(String filename)
 			
 			
 			ArrayList<String> sentencecontent = stemmingandstopwordremovaltry.content(split[5]);
-			if((sentencecontent.size()<2)||(line.contains("|")))
-			continue;
-			ranking.add(split[5]);
+			//if(sentencecontent.size()<1)
+			//continue;
 			runattributes r=new runattributes();
 			r.qid=split[0];
 			r.tid=split[1];
@@ -63,7 +59,8 @@ public static void readfileandtermspace(String filename)
 			r.sent=split[5];
 			r.timestamp=split[6];
 			r.confidence=split[7];
-			score.add(r);
+			rankedsent.put(split[5], r);
+			
 			HashSet<String> hb = null;
 			hb = new HashSet<String>(sentencecontent);
 		
@@ -81,11 +78,12 @@ public static void readfileandtermspace(String filename)
 
 		readfileandtermspace("/home/bhargava/Documents/afghanistan/afghanresults/rankedevaltrecfeaturesner2012-02-24-02.txt");
 		MinHashLSH minhash = new MinHashLSH(100,5,100,100000000);
-		minhash.setThreshold(0.8d, Double.MIN_VALUE);
-		double[][] vals = new double[ranking.size()][termspace.size()];
-		for(int i=0;i<ranking.size();i++)
+		minhash.setThreshold(0.8d, Double.MIN_VALUE);int i=0;
+		double[][] vals = new double[rankedsent.size()][termspace.size()];
+	
+		for(Map.Entry<String, runattributes> entry:rankedsent.entrySet())
 		{
-			HashMap<String, Double> sentfreq = getsentencefreq(ranking.get(i));
+			LinkedHashMap<String, Double> sentfreq = getsentencefreq(entry.getKey());
 			
 			int count=0;
 			Iterator<String> iterator=termspace.iterator();
@@ -101,28 +99,27 @@ public static void readfileandtermspace(String filename)
 			}
 			//System.out.println(vals.length);
 			Features f=FeaturesFactory.newInstance(vals[i]);
-			JaccardDocument d1 = new JaccardDocument(ranking.get(i), f, termspace.size());
+			JaccardDocument d1 = new JaccardDocument(entry.getKey(), f, termspace.size());
 			minhash.put(d1);
+			i++;
 			
 		}/*int ct=0;
 		System.out.println(ranking.size());
 		for(int i=0;i<ranking.size();i++)
-		{System.out.println(ranking.get(i));
+		{System.out.println(ranking.get(i)+" "+score.get(i));
 			Features f=FeaturesFactory.newInstance(vals[i]);
 			JaccardDocument d1 = new JaccardDocument(ranking.get(i), f, termspace.size());
-		/*System.out.println("In arbitrary order: ");
-		for (String d : minhash.neighbourKeys(d1)) {
-			System.out.println(d);
-		}
+		
 		System.out.println("In sorted order: ");
 		Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(d1);
 		
 		while (result.hasNext()) {
 			RankedDocument item = result.next();
 			//System.out.println(item.hashCode());
-		//if(ct==0)
-			//System.out.println(item.item().key() + ": " + String.valueOf(item.score()));
-			boolean delreturn = ranking.remove(item.item().key());
+		//if(ct==
+			System.out.println(ranking.indexOf(item.item().key()));
+	score.remove(ranking.indexOf(item.item().key()));
+			ranking.remove(item.item().key());
 			
 			
 		}
@@ -140,76 +137,54 @@ public static void readfileandtermspace(String filename)
 			while (result.hasNext()) {
 				RankedDocument item = result.next();
 				System.out.println(item.item().key() + ": " + String.valueOf(item.score()));
-			}*/
-		Features f=FeaturesFactory.newInstance(vals[0]);
-		JaccardDocument d1 = new JaccardDocument(ranking.get(0), f, termspace.size());
-		ArrayList<ArrayList<String>> clusters=new ArrayList<ArrayList<String>>();
-		ArrayList<String> cluster0=new ArrayList<String>();
-		Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(d1);
-		cluster0.add(d1.key().toString());
-		while (result.hasNext()) {
-			RankedDocument item = result.next();
-			cluster0.add(item.item().key());
-			//System.out.println(item.item().key() + ": " + String.valueOf(item.score()));
-		}
-		clusters.add(cluster0);
-		for(int i=1;i<ranking.size();i++)
+			}*/i=0;
+		ArrayList<ArrayList<runattributes>> clusters=new ArrayList<ArrayList<runattributes>>();
+		for(Map.Entry<String, runattributes> entry:rankedsent.entrySet())
 		{int flag=1;
+		if(i==0)
+			flag=0;
 		System.out.println("here");
 			for(int j=0;j<clusters.size();j++)
-				if(clusters.get(j).contains(ranking.get(i)))
+				if(clusters.get(j).contains(entry.getValue()))
 				{
 					flag=0;
 					break;
 				}
 			if(flag==1)
 			{System.out.println("here in if");
-				ArrayList<String> cluster=new ArrayList<String>();
+				ArrayList<runattributes> cluster=new ArrayList<runattributes>();
 			Features f1=FeaturesFactory.newInstance(vals[i]);
-			JaccardDocument d11 = new JaccardDocument(ranking.get(i), f1, termspace.size());
+			JaccardDocument d11 = new JaccardDocument(entry.getKey(), f1, termspace.size());
 			Iterator<RankedDocument> result1 = (Iterator<RankedDocument>) minhash.neighbours(d11);
-			cluster.add(d11.key().toString());
+			
 			while (result1.hasNext()) {int flag1=1;
 				RankedDocument item = result1.next();
-				for(int j=0;j<clusters.size();j++)
-					if(clusters.get(j).contains(ranking.get(i)))
-					{
-						flag1=0;
-					break;
-					}
-				if(flag1==1)
-				{
-				cluster.add(item.item().key());
-				}
-				//System.out.println(item.item().key() + ": " + String.valueOf(item.score()));
-			}
-			clusters.add(cluster);
-			}
-		}setoftoprankedsentences=new ArrayList<runattributes>();
-		int cluscount=0;
-		for(int clus=0;clus<clusters.size();clus++)
-		{//System.out.println(cluscount);
-			rankedsentences=new ArrayList<runattributes>();
-		if(clusters.get(clus).size()>0)
-		{System.out.println(cluscount);
-			for(int sent=0;sent<clusters.get(clus).size();sent++)
-				{//System.out.println(clusters.get(clus).get(sent)+" "+score.get(ranking.indexOf(clusters.get(clus).get(sent))).sent);
-				rankedsentences.add(score.get(ranking.indexOf(clusters.get(clus).get(sent))));
-				}
-		
 			
-			cluscount++;
-			Collections.sort(rankedsentences,new Comparator<runattributes>(){
+				cluster.add(rankedsent.get(item.item().key()));
+				
+				//System.out.println(item.item().key() + ": " + String.valueOf(item.score()));
+			}Collections.sort(cluster,new Comparator<runattributes>(){
 		    	public int compare(runattributes s1,runattributes s2)
 		    	{Double score1=Double.parseDouble(s1.confidence);
 		    	Double score2=Double.parseDouble(s2.confidence);
 		    	return score2.compareTo(score1);
 		    	}
 		    });
-			
-			System.out.println(rankedsentences.get(0).confidence+" "+rankedsentences.get(0).sent);
-			setoftoprankedsentences.add(rankedsentences.get(0));
+			clusters.add(cluster);
+			}
+		i++;}
+		ArrayList<runattributes> setoftoprankedsentences=new ArrayList<runattributes>();
+		int cluscount=0;
+		for(int clus=0;clus<clusters.size();clus++)
+		{//System.out.println(cluscount);
+	//	if(clusters.get(clus).size()>10)
+		{System.out.println(cluscount);
+			for(int sent=0;sent<clusters.get(clus).size();sent++)
+				{setoftoprankedsentences.add(clusters.get(clus).get(sent));System.out.println(clusters.get(clus).get(sent).sent+" "+clusters.get(clus).get(sent).confidence);break;}
+		//System.out.println(clusters.get(clus).get(0).sent);
 		}
+			
+			cluscount++;
 		}
 		Collections.sort(setoftoprankedsentences,new Comparator<runattributes>(){
 	    	public int compare(runattributes s1,runattributes s2)
@@ -218,12 +193,11 @@ public static void readfileandtermspace(String filename)
 	    	return score2.compareTo(score1);
 	    	}
 	    });
-		
 		for(int j=0;j<setoftoprankedsentences.size();j++)
 		{
 			System.out.println(setoftoprankedsentences.get(j).sent+" "+setoftoprankedsentences.get(j).confidence);
 		}
-		
+			
 		}
 
 		
@@ -231,8 +205,8 @@ public static void readfileandtermspace(String filename)
 
 	public static void getlearningtorankresults(List<sentencescore> ranking) {
 		// TODO Auto-generated method stub
-		termspace=new HashSet<String>();
-		//rankedsentences=ranking;
+		/*termspace=new HashSet<String>();
+		rankedsentences=ranking;
 		sentences=new ArrayList<String>();
 		for(int i=0;i<ranking.size();i++)
 		{
@@ -254,7 +228,7 @@ public static void readfileandtermspace(String filename)
 		
 		}
 		
-		
+		*/
 			
 		//	for(int )
 			
@@ -262,7 +236,7 @@ public static void readfileandtermspace(String filename)
 	}
 	
 	
-	public static HashMap<String,Double> getsentencefreq(String sentence)
+	public static LinkedHashMap<String,Double> getsentencefreq(String sentence)
 	{ArrayList<String> sentencecontent = null;
 	try {
 		sentencecontent = stemmingandstopwordremovaltry.content(sentence);
@@ -270,7 +244,7 @@ public static void readfileandtermspace(String filename)
 		// TODO Auto-generated catch block
 		e.printStackTrace();
 	}
-		HashMap<String, Double> sentencefreq = new HashMap<String, Double>();
+		LinkedHashMap<String, Double> sentencefreq = new LinkedHashMap<String, Double>();
 		for(int i=0;i<sentencecontent.size();i++)
 		{
 			if(sentencefreq.containsKey(sentencecontent.get(i)))
