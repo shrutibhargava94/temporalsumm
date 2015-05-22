@@ -113,12 +113,7 @@ public static double infogain_check(ArrayList<String> y,ArrayList<String> x)
 				processinitsummary(folders[i]);
 			else
 			processsummary(folders[i]);
-			try {
-				System.in.read();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
 		}
 		}
 		

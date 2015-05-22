@@ -7,6 +7,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +19,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import lsh.minhash.JaccardDocument;
 import lsh.minhash.MinHashLSH;
@@ -94,12 +100,7 @@ private ArrayList<String> termspacelist;
 		termspacelist.add(entry.getKey());
 		}
 	System.out.println("no of sentences"+rankedsent.size()+" "+sentct);
-	try {
-		System.in.read();
-	} catch (IOException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
+	
 	try {
 		br.close();
 	} catch (IOException e) {
@@ -111,7 +112,7 @@ private ArrayList<String> termspacelist;
 	
 	private void processlsh(String string, String string2) {BufferedWriter bw = null;
 	try {
-		 bw=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghansumm/"+string2)));
+		 bw=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghansumm1/"+string2)));
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
@@ -229,37 +230,19 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 	ct++;
 	}*/int clusterct=0;
 	System.out.println(clusterct);
-	try {
-		bw.write("cluster");
-		bw.newLine();
-	} catch (IOException e2) {
-		// TODO Auto-generated catch block
-		e2.printStackTrace();
-	}
+	
 	clusterct++;
 	Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(jaccarddoclist.get(0));
 	HashMap<String, runattributes> cluster = new HashMap<String, runattributes>();
 	cluster.put(jaccarddoclist.get(0).key(),rankedsent.get(jaccarddoclist.get(0).key()));
 //System.out.println(jaccarddoclist.get(0).key());
-try {
-	bw.write(jaccarddoclist.get(0).key());
-	bw.newLine();
-} catch (IOException e1) {
-	// TODO Auto-generated catch block
-	e1.printStackTrace();
-}
+
 
 	while (result.hasNext()) {
 	RankedDocument item = result.next();
 	cluster.put(item.item().key(),rankedsent.get(item.item().key()));
 	//System.out.println(item.item().key());
-	try {
-		bw.write(item.item().key());
-		bw.newLine();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+	
 	}clusters.add(cluster);
 	for(int i=1;i<jaccarddoclist.size();i++)
 	{int alreadycovered=0;
@@ -273,25 +256,13 @@ try {
 	}
 	if(alreadycovered==0)
 	{//System.out.println(clusterct);
-	try {
-		bw.write("cluster");
-		bw.newLine();
-	} catch (IOException e2) {
-		// TODO Auto-generated catch block
-		e2.printStackTrace();
-	}
+	
 	clusterct++;
 		HashMap<String,runattributes> cluster1=new HashMap<String, runattributes>();
 	Iterator<RankedDocument> result1 = (Iterator<RankedDocument>) minhash.neighbours(jaccarddoclist.get(i));
 	cluster1.put(jaccarddoclist.get(i).key(),rankedsent.get(jaccarddoclist.get(i).key()));
 	//System.out.println(jaccarddoclist.get(i).key());
-	try {
-		bw.write(jaccarddoclist.get(i).key());
-		bw.newLine();
-	} catch (IOException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
+	
 	while (result1.hasNext()) {
 	RankedDocument item = result1.next();
 	int alreadycovered1=0;
@@ -306,13 +277,7 @@ try {
 	{
 	cluster1.put(item.item().key(),rankedsent.get(item.item().key()));
 	//System.out.println(item.item().key());
-	try {
-		bw.write(item.item().key());
-		bw.newLine();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}}
+	}
 	}clusters.add(cluster1);
 	
 	}
@@ -321,11 +286,36 @@ try {
     	{return s2.size()-s1.size();
     	}
     });
-	for(int i=0;i<clusters.size();i++)
+	for(int i=0;i<clusters.size()/10;i++)
 	{
 		System.out.println(clusters.get(i).size());
-		System.out.println(clusters.get(i).entrySet().iterator().next());
+		//System.out.println(clusters.get(i).entrySet().iterator().next());
+		SortedSet<Map.Entry<String, runattributes>> sortedset = new TreeSet<Map.Entry<String, runattributes>>(
+	            new Comparator<Map.Entry<String, runattributes>>() {
+	                @Override
+	                public int compare(Map.Entry<String, runattributes> e1,
+	                        Map.Entry<String, runattributes> e2) {
+	                    return e1.getValue().confidence.compareTo(e2.getValue().confidence);
+	                }
+	            });
+
+	  sortedset.addAll(clusters.get(i).entrySet());
+	  System.out.println(sortedset.first());
+	  try {
+		bw.write(sortedset.first().getValue().sent+"\t"+sortedset.first().getValue().qid+"\t"+sortedset.first().getValue().tid+"\t"+sortedset.first().getValue().rid+"\t"+sortedset.first().getValue().did+"\t"+sortedset.first().getValue().sid+"\t"+sortedset.first().getValue().timestamp+"\t"+sortedset.first().getValue().confidence);
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
 	}
+	  try {
+		bw.newLine();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	}
+	
+	
 	try {
 		bw.close();
 	} catch (IOException e) {
@@ -357,7 +347,7 @@ try {
 	}
 	public static void main(String args[])
 	{
-		/*String path="/home/bhargava/Documents/afghanresults";
+		String path="/home/bhargava/Documents/afghanresults";
 		File rankedsent=new File(path);
 		String[] files=rankedsent.list();
 		Collections.sort(Arrays.asList(files));
@@ -372,16 +362,16 @@ try {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		if((files[file].contains("eval"))&&(filesize>0))
-		{stanfordlshcluster st=new stanfordlshcluster();
+		if((files[file].contains("eval"))&&(filesize>0)&&(files[file].contains("26")))
+		{lshtry21maytoprankedsent st=new lshtry21maytoprankedsent();
 		st.processlsh(path+"/",files[file]);
 		}
 			
-		}*/
-		long starttime=System.currentTimeMillis();
+		}
+		/*long starttime=System.currentTimeMillis();
 		lshtry21maytoprankedsent st=new lshtry21maytoprankedsent();
 		st.processlsh("/home/bhargava/Documents/afghanresults"+"/","rankedevaltrecfeaturesner2012-02-27-23.txt");
 		long endtime=System.currentTimeMillis();
-		System.out.println(endtime-starttime);
+		System.out.println(endtime-starttime);*/
 	}
 }

@@ -23,13 +23,13 @@ import tuan.ml.FeaturesFactory;
 
 class lshtry21may
 {HashMap<String,Integer> termspacereduce;
-	private HashSet<String> termspace;
+	//private HashSet<String> termspace;
 private HashMap<String,runattributes> rankedsent;
 private ArrayList<HashMap<String,runattributes>> clusters;
 private ArrayList<JaccardDocument> jaccarddoclist;
 private ArrayList<String> termspacelist;
 	public  void readfileandtermspace(String filename)
-	{termspace=new HashSet<String>();
+	{//termspace=new HashSet<String>();
 	termspacereduce =new HashMap<String, Integer>();
 	termspacelist=new ArrayList<String>();
 		BufferedReader br=null;
@@ -64,8 +64,8 @@ private ArrayList<String> termspacelist;
 				r.confidence=split[7];
 				
 				rankedsent.put(split[5],r);
-				HashSet<String> hb = null;
-				hb = new HashSet<String>(sentencecontent);
+			//	HashSet<String> hb = null;
+				//hb = new HashSet<String>(sentencecontent);
 			for(int i=0;i<sentencecontent.size();i++)
 			{
 				if(termspacereduce.containsKey(sentencecontent.get(i)))
@@ -74,7 +74,7 @@ private ArrayList<String> termspacelist;
 					termspacereduce.put(sentencecontent.get(i),1);
 					
 			}
-				termspace.addAll(hb);
+				//termspace.addAll(hb);
 			}
 			}
 		} catch (IOException e) {
@@ -84,7 +84,7 @@ private ArrayList<String> termspacelist;
 		
 	for(Map.Entry<String,Integer> entry:termspacereduce.entrySet())
 		{if(entry.getValue()==1)
-			termspace.remove(entry.getKey());
+			continue;//termspace.remove(entry.getKey());
 		else
 		termspacelist.add(entry.getKey());
 		}
@@ -108,7 +108,7 @@ private ArrayList<String> termspacelist;
 		//term space
 	for(Map.Entry<String, runattributes> entry:rankedsent.entrySet())
 	{
-		double[] val=new double[termspace.size()];
+		double[] val=new double[termspacelist.size()];
 		HashMap<String, Double> sentfreq = getsentencefreq(entry.getKey());
 		
 		int count=0;
@@ -130,7 +130,7 @@ private ArrayList<String> termspacelist;
 		//System.out.println(vals.length);
 		System.out.println(val.length);
 		Features f=FeaturesFactory.newInstance(val);
-		JaccardDocument d1 = new JaccardDocument(entry.getKey(), f, termspace.size());
+		JaccardDocument d1 = new JaccardDocument(entry.getKey(), f, termspacelist.size());
 		jaccarddoclist.add(d1);
 		minhash.put(d1);
 		
