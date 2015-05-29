@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -36,6 +37,7 @@ private HashMap<String,runattributes> rankedsent;
 private ArrayList<HashMap<String,runattributes>> clusters;
 private ArrayList<JaccardDocument> jaccarddoclist;
 private ArrayList<String> termspacelist;
+static int K=100;
 	public  void readfileandtermspace(String filename)
 	{termspace=new HashSet<String>();
 	termspacereduce =new HashMap<String, Integer>();
@@ -85,7 +87,7 @@ private ArrayList<String> termspacelist;
 			}
 				termspace.addAll(hb);
 			sentct++;
-			if(rankedsent.size()==1999)
+			if(rankedsent.size()==K-1)
 				break;}
 			}
 		} catch (IOException e) {
@@ -112,7 +114,7 @@ private ArrayList<String> termspacelist;
 	
 	private void processlsh(String string, String string2) {BufferedWriter bw = null;
 	try {
-		 bw=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghansumm1/"+string2)));
+		 bw=new BufferedWriter(new FileWriter(new File("/home/bhargava/boston100/"+string2)));
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
@@ -120,7 +122,7 @@ private ArrayList<String> termspacelist;
 		readfileandtermspace(string+string2);
 		long endtime=System.currentTimeMillis();
 		System.out.println(endtime-starttime);
-		MinHashLSH minhash = new MinHashLSH(100,5,100,100000000);
+		MinHashLSH minhash = new MinHashLSH(100,50,100,100000000);
 		minhash.setThreshold(0.8d, Double.MIN_VALUE);
 		clusters=new ArrayList<HashMap<String,runattributes>>();
 	jaccarddoclist=new ArrayList<JaccardDocument>();
@@ -255,9 +257,9 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 			
 	}
 	if(alreadycovered==0)
-	{//System.out.println(clusterct);
+	{System.out.println(clusterct);
 	
-	clusterct++;
+	
 		HashMap<String,runattributes> cluster1=new HashMap<String, runattributes>();
 	Iterator<RankedDocument> result1 = (Iterator<RankedDocument>) minhash.neighbours(jaccarddoclist.get(i));
 	cluster1.put(jaccarddoclist.get(i).key(),rankedsent.get(jaccarddoclist.get(i).key()));
@@ -276,18 +278,19 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 	}if(alreadycovered1==0)
 	{
 	cluster1.put(item.item().key(),rankedsent.get(item.item().key()));
-	//System.out.println(item.item().key());
+//System.out.println(item.item().key());
 	}
-	}clusters.add(cluster1);
+	}clusterct++;clusters.add(cluster1);
+	
 	
 	}
 	}Collections.sort(clusters,new Comparator<HashMap<String,runattributes>>(){
     	public int compare(HashMap<String,runattributes>s1,HashMap<String,runattributes> s2)
     	{return s2.size()-s1.size();
     	}
-    });
+    });int totalupdates=0;
 	for(int i=0;i<clusters.size()/10;i++)
-	{
+	{int updatefromcluster=clusters.get(i).size()/K*20;
 		System.out.println(clusters.get(i).size());
 		//System.out.println(clusters.get(i).entrySet().iterator().next());
 		SortedSet<Map.Entry<String, runattributes>> sortedset = new TreeSet<Map.Entry<String, runattributes>>(
@@ -295,24 +298,49 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 	                @Override
 	                public int compare(Map.Entry<String, runattributes> e1,
 	                        Map.Entry<String, runattributes> e2) {
-	                    return e1.getValue().confidence.compareTo(e2.getValue().confidence);
+	                    return e2.getValue().confidence.compareTo(e1.getValue().confidence);
 	                }
 	            });
 
 	  sortedset.addAll(clusters.get(i).entrySet());
-	  System.out.println(sortedset.first());
 	  try {
-		bw.write(sortedset.first().getValue().sent+"\t"+sortedset.first().getValue().qid+"\t"+sortedset.first().getValue().tid+"\t"+sortedset.first().getValue().rid+"\t"+sortedset.first().getValue().did+"\t"+sortedset.first().getValue().sid+"\t"+sortedset.first().getValue().timestamp+"\t"+sortedset.first().getValue().confidence);
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
-	  try {
-		bw.newLine();
-	} catch (IOException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
+			bw.write(sortedset.first().getValue().sent+"\t"+sortedset.first().getValue().qid+"\t"+sortedset.first().getValue().tid+"\t"+sortedset.first().getValue().rid+"\t"+sortedset.first().getValue().did+"\t"+sortedset.first().getValue().sid+"\t"+sortedset.first().getValue().timestamp+"\t"+sortedset.first().getValue().confidence);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		  try {
+			bw.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	 //System.out.println(sortedset.first());
+	 int up=0;
+	 /*Iterator<Entry<String, runattributes>> iter=sortedset.iterator();
+	 while(iter.hasNext())
+	 {runattributes nextsent = iter.next().getValue();
+		 System.out.println(nextsent.sent+ " "+nextsent.confidence);
+		 try {
+				bw.write(nextsent.sent+"\t"+nextsent.qid+"\t"+nextsent.tid+"\t"+nextsent.rid+"\t"+nextsent.did+"\t"+nextsent.sid+"\t"+nextsent.timestamp+"\t"+nextsent.confidence);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			  try {
+				bw.newLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		 up++; totalupdates++;
+		 if(up==updatefromcluster)
+			 break;
+	 }*/
+	
+//if(totalupdates==20)
+	//break;
+	 
 	}
 	
 	
@@ -347,7 +375,7 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 	}
 	public static void main(String args[])
 	{
-		String path="/home/bhargava/Documents/afghanresults";
+		String path="/home/bhargava/bostonresultsranking";
 		File rankedsent=new File(path);
 		String[] files=rankedsent.list();
 		Collections.sort(Arrays.asList(files));
@@ -362,7 +390,7 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		if((files[file].contains("eval"))&&(filesize>0)&&(files[file].contains("26")))
+		if((files[file].contains("eval"))&&(filesize>0))
 		{lshtry21maytoprankedsent st=new lshtry21maytoprankedsent();
 		st.processlsh(path+"/",files[file]);
 		}

@@ -19,8 +19,9 @@ import java.util.Map;
 
 class sus22may
 {static ArrayList<runattributes> updates=new ArrayList<runattributes>();
-static String path="/home/bhargava/afghansumm";
+static String path="/home/bhargava/afghansumm26may";
 static BufferedWriter bw=null;
+static double K;
 	//checking if summary contains the query
 	
 	//read summary for hour
@@ -72,9 +73,11 @@ static BufferedWriter bw=null;
 	}
 
 public static void main(String args[])
-{
+{K=Double.parseDouble(args[0]);
+if(args[2]!=null)
+path=args[2];
 	try {
-	bw  = new BufferedWriter(new FileWriter(new File("/home/bhargava/updatesforevalafghan")));
+	bw  = new BufferedWriter(new FileWriter(new File(args[1])));
 } catch (IOException e1) {
 	// TODO Auto-generated catch block
 	e1.printStackTrace();
@@ -239,7 +242,7 @@ private static void processsumm(String string) {
 									int flag=0;
 								for(int i=0;i<updates.size();i++)
 									{
-									if(infogain_check(stemmingandstopwordremovaltry.content(r.sent), stemmingandstopwordremovaltry.content(updates.get(i).sent))<0.4)
+									if(infogain_check(stemmingandstopwordremovaltry.content(r.sent), stemmingandstopwordremovaltry.content(updates.get(i).sent))<K)
 										flag=1;
 									
 									}
@@ -266,7 +269,7 @@ private static void processsumm(String string) {
 private static boolean checkforquery(ArrayList<runattributes> readsumm) {
 	for(int i=0;i<readsumm.size();i++)
 	{
-		if(readsumm.get(i).sent.contains("quran")||readsumm.get(i).sent.contains("burning")||readsumm.get(i).sent.contains("protests"))
+		if(readsumm.get(i).sent.contains("boston")||readsumm.get(i).sent.contains("marathon")||readsumm.get(i).sent.contains("bombing"))
 			return true;
 	}
 	return false;

@@ -119,17 +119,17 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
     }
 }
 	public static void process(String folders)
-	{File f=new File("/home/bhargava/afghanresults/rankedner"+folders);
+	{/*File f=new File("/home/bhargava/afghanresults26may/rankedner"+folders);
 	FileWriter fw=null;
 	try {
 		 fw=new FileWriter(f);
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
-	}
+	}*/
 	
-	BufferedWriter bw=new BufferedWriter(fw);
-	{File f4=new File("/home/bhargava/afghanresults/rankedeval"+folders);
+//	BufferedWriter bw=new BufferedWriter(fw);
+	{File f4=new File("/home/bhargava/bostonresultsranking/rankedeval"+folders);
 	FileWriter fw4=null;
 	try {
 		 fw4=new FileWriter(f4);
@@ -139,7 +139,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	}
 	
 	BufferedWriter bw4=new BufferedWriter(fw4);
-	File f3=new File("/home/bhargava/afghanresults/rankedmmrner"+folders);
+	/*File f3=new File("/home/bhargava/afghanresults26may/rankedmmrner"+folders);
 	FileWriter fw2=null;
 	try {
 		 fw2=new FileWriter(f3);
@@ -148,8 +148,8 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 		e1.printStackTrace();
 	}
 	
-	BufferedWriter bw2=new BufferedWriter(fw2);
-		File f1=new File("/home/bhargava/afghanscoresavg/"+folders);
+	BufferedWriter bw2=new BufferedWriter(fw2);*/
+		File f1=new File("/home/bhargava/bostonscoresavg/"+folders);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -158,7 +158,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			e.printStackTrace();
 		}
 		BufferedReader br=new BufferedReader(fr);
-		File f2=new File("/home/bhargava/afghanfeatures/"+folders);
+		File f2=new File("/home/bhargava/bostonfeatures/"+folders);
 		FileReader fr1 = null;
 		try {
 			fr1 = new FileReader(f2);
@@ -216,13 +216,8 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 		    		return s1.topic-s2.topic;
 		    	}
 		    });
-			mmr(ranking,bw2,folders);
-			try {
-				bw2.close();
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+		//	mmr(ranking,bw2,folders);
+			
 			//sentencetermspace.getlearningtorankresults(ranking);
 			for(int i=0;i<ranking.size();i++)
 			{String[] timehour=folders.split("trecfeaturesner");
@@ -239,7 +234,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			}
 				//System.out.println(i+" "+ranking.get(i).topic+" "+ranking.get(i).sentence);
 				try {
-					bw.write(i+" "+ranking.get(i).topic+" "+ranking.get(i).sentence);
+					//bw.write(i+" "+ranking.get(i).topic+" "+ranking.get(i).sentence);
 					System.out.println(ranking.get(i).sentence+"\t"+(date.getTime()/1000+3600)+"\t"+ranking.get(i).score);
 					bw4.write(ranking.get(i).sentence+"\t"+(date.getTime()/1000+3600)+"\t"+ranking.get(i).score);
 					bw4.newLine();
@@ -247,15 +242,10 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				try {
-					bw.newLine();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				
 			}
 			try {
-				bw.close();
+				
 				bw4.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -278,7 +268,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	
 	public static void main(String args[])
 	{  	average();
-		String scorepath="/home/bhargava/afghanscoresavg";
+		String scorepath="/home/bhargava/bostonscoresavg";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));
@@ -303,7 +293,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	}
 	private static void average() {
 		// TODO Auto-generated method stub
-		String scorepath="/home/bhargava/afghanfeatures";
+		String scorepath="/home/bhargava/bostonfeatures";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));
@@ -315,7 +305,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			System.out.println(folders[i]);
 		for(int j=0;j<10;j++)
 		{int filenum=j+1;
-			File f1=new File("/home/bhargava/afghanscores/"+folders[i]+filenum);
+			File f1=new File("/home/bhargava/bostonscores/"+folders[i]+filenum);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -359,7 +349,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}}	File f=new File("/home/bhargava/afghanscoresavg/"+folders[i]);
+			}}	File f=new File("/home/bhargava/bostonscoresavg/"+folders[i]);
 		FileWriter fw=null;
 		try {
 			 fw=new FileWriter(f);

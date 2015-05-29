@@ -10,7 +10,7 @@ import java.util.HashMap;
 class features
 {static boolean train=false;
 //static String path="/home/bhargava/Documents/firstsetuptry/newspapercontent1/";
-static String freqhashmappath="/home/bhargava/afghanterrierfreqstat/";
+static String freqhashmappath="/home/bhargava/Documents/afghanistanboilerplate/afghanfreqstat/";
 static HashMap<String,Double> topicweight;
 private static int topic=16;
 	public static void main(String args[])

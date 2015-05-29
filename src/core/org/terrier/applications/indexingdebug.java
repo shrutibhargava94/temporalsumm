@@ -64,9 +64,9 @@ import org.terrier.utility.ApplicationSetup;
  * </ul>
  * @author Gianni Amati, Vassilis Plachouras, Ben He, Craig Macdonald
  */
-public class TRECIndexing {
+public class indexingdebug {
 	/** The logger used */
-	private static Logger logger = Logger.getLogger(TRECIndexing.class);
+	private static Logger logger = Logger.getLogger(indexingdebug.class);
 	/** The collection to index. */
 	Collection collectionTREC;
 	
@@ -80,7 +80,7 @@ public class TRECIndexing {
 	 * @param _path Absolute path to where the index should be created
 	 * @param _prefix Prefix of the index files, usually "data"
 	 */
-	public TRECIndexing(String _path, String _prefix)
+	public indexingdebug(String _path, String _prefix)
 	{
 		path = _path; prefix = _prefix;
 		//load the appropriate collection
@@ -118,9 +118,8 @@ public class TRECIndexing {
 	 * A default constructor that initialised the data structures
 	 * to use for indexing.
 	 */
-	public TRECIndexing() {
+	public indexingdebug() {
 		this(ApplicationSetup.TERRIER_INDEX_PATH, ApplicationSetup.TERRIER_INDEX_PREFIX);
-		System.out.println("here in trecindexing cnstructor");
 	}
 	
 	/**
@@ -144,7 +143,6 @@ public class TRECIndexing {
 		} catch (Exception e) {
 			logger.warn("problem closing collection", e);
 		}
-		System.out.println("done indexing");
 	}
 	
 	/**
@@ -259,17 +257,15 @@ public class TRECIndexing {
     //reading from each hour folder in the sentencefolder to be indexed
 	Path dir = Paths.get("/home/bhargava/boston/bostonsentences/");
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-		for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/bostonindex/"+file.getFileName().toString());//path for storing index
+		for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/bostonterrierindex/"+file.getFileName().toString());//path for storing index
 		Files.createDirectory(dirfolder);
-		System.out.println("created index folder");
 		ApplicationSetup.setProperty("terrier.index.path", dirfolder.toString());
-		ApplicationSetup.setProperty("collection.spec", "/home/bhargava/boston/bostonlistforterrier"+file.getFileName().toString());//path for list for terrier indexing
+		ApplicationSetup.setProperty("collection.spec", "/home/bhargava/boston/bostonlistforterrier/"+file.getFileName().toString());//path for list for terrier indexing
 		ApplicationSetup.loadCommonProperties();
 		long startTime = System.currentTimeMillis();
-		TRECIndexing t = new TRECIndexing();
-		System.out.println("initialized trec indexing");
+		indexingdebug t = new indexingdebug();
+
 		t.index();
-		System.out.println("doneindexing");
 		InteractiveQuerying iq=new InteractiveQuerying();
 		iq.processQuery("q1","+boston +marathon +bombing", 1.0);//change query according to the event
 		//result file name and docid in this file 

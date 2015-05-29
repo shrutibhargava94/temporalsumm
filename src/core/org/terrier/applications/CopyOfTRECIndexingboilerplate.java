@@ -64,9 +64,9 @@ import org.terrier.utility.ApplicationSetup;
  * </ul>
  * @author Gianni Amati, Vassilis Plachouras, Ben He, Craig Macdonald
  */
-public class TRECIndexing {
+public class CopyOfTRECIndexingboilerplate {
 	/** The logger used */
-	private static Logger logger = Logger.getLogger(TRECIndexing.class);
+	private static Logger logger = Logger.getLogger(CopyOfTRECIndexingboilerplate.class);
 	/** The collection to index. */
 	Collection collectionTREC;
 	
@@ -80,7 +80,7 @@ public class TRECIndexing {
 	 * @param _path Absolute path to where the index should be created
 	 * @param _prefix Prefix of the index files, usually "data"
 	 */
-	public TRECIndexing(String _path, String _prefix)
+	public CopyOfTRECIndexingboilerplate(String _path, String _prefix)
 	{
 		path = _path; prefix = _prefix;
 		//load the appropriate collection
@@ -118,7 +118,7 @@ public class TRECIndexing {
 	 * A default constructor that initialised the data structures
 	 * to use for indexing.
 	 */
-	public TRECIndexing() {
+	public CopyOfTRECIndexingboilerplate() {
 		this(ApplicationSetup.TERRIER_INDEX_PATH, ApplicationSetup.TERRIER_INDEX_PREFIX);
 		System.out.println("here in trecindexing cnstructor");
 	}
@@ -257,21 +257,21 @@ public class TRECIndexing {
 	{
 	System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
     //reading from each hour folder in the sentencefolder to be indexed
-	Path dir = Paths.get("/home/bhargava/boston/bostonsentences/");
+	Path dir = Paths.get("/home/bhargava/Documents/afghanistanboilerplate/afghansentencetweak/");
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-		for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/bostonindex/"+file.getFileName().toString());//path for storing index
+		for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/afghanistanboilerplate/afghanindex/"+file.getFileName().toString());//path for storing index
 		Files.createDirectory(dirfolder);
 		System.out.println("created index folder");
 		ApplicationSetup.setProperty("terrier.index.path", dirfolder.toString());
-		ApplicationSetup.setProperty("collection.spec", "/home/bhargava/boston/bostonlistforterrier"+file.getFileName().toString());//path for list for terrier indexing
+		ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/afghanistanboilerplate/afghanlistforterriertweak/"+file.getFileName().toString());//path for list for terrier indexing
 		ApplicationSetup.loadCommonProperties();
 		long startTime = System.currentTimeMillis();
-		TRECIndexing t = new TRECIndexing();
+		CopyOfTRECIndexingboilerplate t = new CopyOfTRECIndexingboilerplate();
 		System.out.println("initialized trec indexing");
 		t.index();
 		System.out.println("doneindexing");
 		InteractiveQuerying iq=new InteractiveQuerying();
-		iq.processQuery("q1","+boston +marathon +bombing", 1.0);//change query according to the event
+		iq.processQuery("q1","+quran +burning +protests", 1.0);//change query according to the event
 		//result file name and docid in this file 
 		Scanner in=new Scanner(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));//path for taking things from interactive query
 		// BufferedWriter bw=new BufferedWriter(new FileWriter(new File("home/bhargava/Documents/firstsetuptry/frequency)))
@@ -279,7 +279,7 @@ public class TRECIndexing {
 		PostingIndex<?> di = index.getDirectIndex();
 		DocumentIndex doi = index.getDocumentIndex();
 		Lexicon<String> lex = index.getLexicon();
-		Path dirfolderfreq = Paths.get("/home/bhargava/bostonfreqstat/"+file.getFileName().toString());//path for saving statistics to
+		Path dirfolderfreq = Paths.get("/home/bhargava/Documents/afghanistanboilerplate/afghanfreqstat/"+file.getFileName().toString());//path for saving statistics to
 		try {
 			Files.createDirectory(dirfolderfreq);
 		} catch (IOException e) {
@@ -291,7 +291,7 @@ public class TRECIndexing {
 		while(in.hasNext())
 		{String filename=in.next();
 		System.out.println(filename);
-
+        
 		String[] ar=filename.split("/");
 		int docid = in.nextInt(); //docids are 0-based
 		HashMap<String,Double> freq=new HashMap<String,Double>();

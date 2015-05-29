@@ -43,6 +43,16 @@ private double date;
 private double duration;
 private double money;
 private String docid;
+private double person;
+private double firstsent;
+private double thirdsent;
+private double fifthsent;
+private double numberofwordsten;
+private double numberofwordsfive;
+private double numberofcontentfive;
+private double numberofcontentten;
+private double containspara;
+private int numberofwords;
 	public CopyOffeaturesentencesentid(int sentencepos, String line, ArrayList<String> querycontent, HashMap<String, Double> hourfreq,HashMap<String,Double>topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic, HashMap<String, sentencerank> rankmap, String files) {
 		// TODO Auto-generated constructor stub
 		absoluteposition=(double)sentencepos;
@@ -61,7 +71,39 @@ private String docid;
 		money=0.0;
 		date=0.0;
 		duration=0.0;
+		person=0.0;
+		firstsent=0.0;
+		thirdsent=0.0;
+		fifthsent=0.0;
+		numberofwordsten=0.0;
+		numberofwordsfive=0.0;
+		numberofcontentfive=0.0;
+		numberofcontentten=0.0;
+		containspara=0.0;
 	
+	}
+	public void simplefeatures()
+	{
+		if(absoluteposition<1)
+			firstsent=1.0;
+		else if((absoluteposition>=1)&&(absoluteposition<3))
+		thirdsent=1.0;
+		else if((absoluteposition>=3)&&(absoluteposition<5))
+		fifthsent=1.0;
+		
+		numberofwords=sentence.split(" ").length;
+		if((numberofwords>5)&&(numberofwords<=10))
+			numberofwordsfive=1.0;
+		else if(numberofwords>10)
+			numberofwordsten=1.0;
+			
+		if((numberofcontentwords>5)&&(numberofcontentwords<=10))
+			numberofcontentfive=1.0;
+		else if(numberofcontentwords>10)
+			numberofcontentten=1.0;
+		
+		if(sentence.contains("(")||sentence.contains(")")||sentence.contains("[")||sentence.contains("]")||sentence.contains("{")||sentence.contains("}")||sentence.contains("<")||sentence.contains(">"))
+				containspara=1.0;
 	}
 public void preprocesssentence()
 {
@@ -84,7 +126,7 @@ public void preprocesssentence()
 		
 		 System.out.println(sentence+" "+absoluteposition+" "+numberofcontentwords+" "+unigramoverlap+" "+sumbasic+" "+sumfocus+" "+mutualinfo);
 		 try {String sentenceescaped=Utils.quote(sentence);
-			bw.write("0"+" qid:"+topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" 7:"+location+" 8:"+duration+" 9:"+time+" 10:"+money+" 11:"+date+" #"+topic+"\t"+"l3s"+"\t"+"l3s1"+"\t"+docid+"\t"+(int)absoluteposition+"\t"+sentence);
+			bw.write("0"+" qid:"+topic+" 1:"+absoluteposition+" 2:"+numberofcontentwords+" 3:"+unigramoverlap+" 4:"+sumbasic+" 5:"+sumfocus+" 6:"+mutualinfo+" 7:"+location+" 8:"+duration+" 9:"+time+" 10:"+money+" 11:"+date+" 12:"+person+" 13:"+firstsent+" 14:"+thirdsent+" 15:"+fifthsent+" 16:"+numberofwords+" 17:"+numberofwordsfive+" 18:"+numberofwordsten+" 19:"+numberofcontentfive+" 20:"+numberofcontentten+" 21:"+containspara+" #"+topic+"\t"+"l3s"+"\t"+"l3s1"+"\t"+docid+"\t"+(int)absoluteposition+"\t"+sentence);
 			//bw.write(topic+","+absoluteposition+","+numberofcontentwords+","+unigramoverlap+","+sumbasic+","+sumfocus+","+mutualinfo+","+location+","+duration+","+time+","+money+","+date);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
