@@ -37,6 +37,7 @@ private HashMap<String,runattributes> rankedsent;
 private ArrayList<HashMap<String,runattributes>> clusters;
 private ArrayList<JaccardDocument> jaccarddoclist;
 private ArrayList<String> termspacelist;
+private ArrayList<runattributes> summarylist;
 static int K=100;
 	public  void readfileandtermspace(String filename)
 	{termspace=new HashSet<String>();
@@ -61,8 +62,7 @@ static int K=100;
 				
 				
 				ArrayList<String> sentencecontent = stemmingandstopwordremovaltry.content(split[5]);
-	if(sentencecontent.size()>2)
-	{
+	
 			
 				runattributes r=new runattributes();
 				r.qid=split[0];
@@ -88,7 +88,8 @@ static int K=100;
 				termspace.addAll(hb);
 			sentct++;
 			if(rankedsent.size()==K-1)
-				break;}
+				break;
+				
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -114,7 +115,7 @@ static int K=100;
 	
 	private void processlsh(String string, String string2) {BufferedWriter bw = null;
 	try {
-		 bw=new BufferedWriter(new FileWriter(new File("/home/bhargava/boston100/"+string2)));
+		 bw=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/hostageclust/"+string2)));
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
@@ -122,7 +123,7 @@ static int K=100;
 		readfileandtermspace(string+string2);
 		long endtime=System.currentTimeMillis();
 		System.out.println(endtime-starttime);
-		MinHashLSH minhash = new MinHashLSH(100,50,100,100000000);
+		MinHashLSH minhash = new MinHashLSH(100,5,100,100000000);
 		minhash.setThreshold(0.8d, Double.MIN_VALUE);
 		clusters=new ArrayList<HashMap<String,runattributes>>();
 	jaccarddoclist=new ArrayList<JaccardDocument>();
@@ -289,8 +290,9 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
     	{return s2.size()-s1.size();
     	}
     });int totalupdates=0;
-	for(int i=0;i<clusters.size()/10;i++)
-	{int updatefromcluster=clusters.get(i).size()/K*20;
+    
+	for(int i=0;i<clusters.size();i++)
+	{//int updatefromcluster=clusters.get(i).size()/K*20;
 		System.out.println(clusters.get(i).size());
 		//System.out.println(clusters.get(i).entrySet().iterator().next());
 		SortedSet<Map.Entry<String, runattributes>> sortedset = new TreeSet<Map.Entry<String, runattributes>>(
@@ -303,7 +305,7 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 	            });
 
 	  sortedset.addAll(clusters.get(i).entrySet());
-	  try {
+	 /* try {
 			bw.write(sortedset.first().getValue().sent+"\t"+sortedset.first().getValue().qid+"\t"+sortedset.first().getValue().tid+"\t"+sortedset.first().getValue().rid+"\t"+sortedset.first().getValue().did+"\t"+sortedset.first().getValue().sid+"\t"+sortedset.first().getValue().timestamp+"\t"+sortedset.first().getValue().confidence);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -314,12 +316,15 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 	 //System.out.println(sortedset.first());
 	 int up=0;
-	 /*Iterator<Entry<String, runattributes>> iter=sortedset.iterator();
+	 Iterator<Entry<String, runattributes>> iter=sortedset.iterator();
+	 summarylist=new ArrayList<runattributes>();
 	 while(iter.hasNext())
 	 {runattributes nextsent = iter.next().getValue();
+	 if(jaccardcheck(nextsent.sent))
+	 { summarylist.add(nextsent);
 		 System.out.println(nextsent.sent+ " "+nextsent.confidence);
 		 try {
 				bw.write(nextsent.sent+"\t"+nextsent.qid+"\t"+nextsent.tid+"\t"+nextsent.rid+"\t"+nextsent.did+"\t"+nextsent.sid+"\t"+nextsent.timestamp+"\t"+nextsent.confidence);
@@ -334,14 +339,15 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 				e.printStackTrace();
 			}
 		 up++; totalupdates++;
-		 if(up==updatefromcluster)
-			 break;
-	 }*/
+	//	 if(up==updatefromcluster)
+		//	 break;
+	 }
+	 }
 	
 //if(totalupdates==20)
 	//break;
 	 
-	}
+}
 	
 	
 	try {
@@ -351,6 +357,29 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 		e.printStackTrace();
 	}
 	}
+	private boolean jaccardcheck(String sent) {
+		ArrayList<String> s1 = null;
+		// TODO Auto-generated method stub
+		try {
+			s1 = stemmingandstopwordremovaltry.content(sent);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}ArrayList<String> s2 = null;
+		for(int i=0;i<summarylist.size();i++)
+		{try {
+			 s2= stemmingandstopwordremovaltry.content(summarylist.get(i).sent);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			if(jaccard(s1,s2)>0.2)
+				return false;
+		}
+		return true;
+	}
+
+
 	public  HashMap<String,Double> getsentencefreq(String sentence)
 	{ArrayList<String> sentencecontent = null;
 	try {
@@ -373,9 +402,26 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 		return sentencefreq;
 		
 	}
+	double jaccard(List<String> s1, List<String> s2)
+	{
+		HashSet<String> ha=new HashSet<String>(s1);
+		HashSet<String> hb=new HashSet<String>(s2);
+		
+		HashSet<String> hac=new HashSet<String>(ha) ;
+		HashSet<String> hac1=new HashSet<String>(ha) ;
+		
+		hac.retainAll(hb);
+	    hac1.addAll(hb);
+	    
+	    double jc=(double)hac.size()/(double)hac1.size();
+		return jc;
+	    
+	    
+	   
+	}
 	public static void main(String args[])
 	{
-		String path="/home/bhargava/bostonresultsranking";
+		String path="/home/bhargava/Documents/hostageresultsranking";
 		File rankedsent=new File(path);
 		String[] files=rankedsent.list();
 		Collections.sort(Arrays.asList(files));

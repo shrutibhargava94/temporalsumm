@@ -23,12 +23,13 @@ import edu.stanford.nlp.util.CoreMap;
 
 class CopyOffeaturefilesentid
 {int sentencepos;
-private String htmlfilterpath="/home/bhargava/Documents/afghanistanboilerplate/htmlfilter/";
+private String htmlfilterpath="/home/bhargava/Documents/hostagecontentfilter/";
 private ArrayList<String> nonboilerplatesentences;
 	public void computefeaturesforfile(String string, String files, ArrayList<String> querycontent, HashMap<String, Double> hourfreq, HashMap<String, Double> topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic, HashMap<String, sentencerank> rankmap) {
 		// TODO Auto-generated method stub
 		File article=new File(string+"/"+files);
-		preprocessnewspaperoutput(files, string);
+		if(preprocessnewspaperoutput(files, string)!=-1)
+		{
 		/*try {
 			Document doc = Jsoup.parse(article, "UTF-8");
 			String text = doc.body().text();
@@ -75,7 +76,7 @@ private ArrayList<String> nonboilerplatesentences;
 			{//System.out.println(line);
 				if(check(line))
 			{
-				CopyOffeaturesentencesentid sent=new CopyOffeaturesentencesentid(sentencepos,line,querycontent,hourfreq,topicweight,freq,bw,topic,rankmap,files);
+				CopyOffeaturesentencesentid sent=new CopyOffeaturesentencesentid(sentencepos,line,querycontent,hourfreq,topicweight,freq,bw,topic,rankmap,Arrays.asList(files.split("@")).get(1));
 		    	sent.computesentencefeatures();
 		    	
 			}
@@ -85,17 +86,19 @@ private ArrayList<String> nonboilerplatesentences;
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		}
 	}
-	public void preprocessnewspaperoutput(String files,String hourpath)
+	public int preprocessnewspaperoutput(String files,String hourpath)
 	{String[] hourname=hourpath.split("/");
 	String[] filename=files.split("@");
-		File article=new File(htmlfilterpath+hourname[hourname.length-1]+"/"+filename[1].replace("txt", "html"));
+		File article=new File(htmlfilterpath+hourname[hourname.length-1]+"/"+filename[1]);
 	Document doc = null;
 	try {
 		doc = Jsoup.parse(article, "UTF-8");
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
-		e.printStackTrace();
+		return -1;
+		//e.printStackTrace();
 	}
 	String text = doc.body().text();
 	Properties props = new Properties();
@@ -120,6 +123,7 @@ private ArrayList<String> nonboilerplatesentences;
 	  nonboilerplatesentences.add(sentence.toString());
 	  //System.out.println(sentence.toString());
 	  }
+	return sentencepos;
 	   
 	    
 		

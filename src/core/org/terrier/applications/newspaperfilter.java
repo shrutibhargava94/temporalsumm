@@ -30,8 +30,9 @@ import org.apache.thrift.transport.TTransportException;
 import streamcorpus.StreamItem;
 
 class newspaperfilter
-{private static String htmlpath="/home/bhargava/Documents/afghanistanboilerplate/htmlfilter";
-public static ArrayList<StreamItem> readStremItemFromFilehtml(String filepath,String outfile)
+{private static String htmlpath="/home/bhargava/Documents/hostagehtmlfilter";
+static int ct=0;
+public static ArrayList<StreamItem> readStremItemFromFilehtml(String filepath,String outfile, ArrayList<String> filelist)
     {
 	File file = new File(filepath);
 	InputStream input = null;
@@ -70,7 +71,8 @@ public static ArrayList<StreamItem> readStremItemFromFilehtml(String filepath,St
         	doc.read(protocol);
            
         	// if((doc.getBody().getLanguage().getName().equalsIgnoreCase("english"))&&((doc.getBody().clean_html.contains("azerbaijan")||doc.getBody().clean_html.contains("earthquake")||doc.getBody().clean_html.contains("iran"))))
-           if((doc.getBody().getLanguage().getName().equalsIgnoreCase("english")))
+           if(filelist.contains(doc.getStream_id()+".txt"))
+        		   {if((doc.getBody().getLanguage().getName().equalsIgnoreCase("english")))
            {   File fileDir = new File(outputfile+doc.getStream_id()+".html");
            
    		Writer out = new BufferedWriter(new OutputStreamWriter(
@@ -82,17 +84,18 @@ public static ArrayList<StreamItem> readStremItemFromFilehtml(String filepath,St
            
             
           
-            System.out.println(outputfile+doc.getDoc_id());
+            System.out.println(outputfile+doc.stream_id);
             out.close();
             
-           
-           
-           
+           ct++;
+           filelist.remove(doc.getStream_id());
+           System.out.println(ct);
+       
            }
            else
         	   {System.out.println("here"+doc.getBody().getLanguage().getCode());
 }
-        } catch (TTransportException e) { 
+        		   }  } catch (TTransportException e) { 
             if (((TTransportException) e).getType() == TTransportException.END_OF_FILE) 
             { 
                 break; 
@@ -114,10 +117,10 @@ public static ArrayList<StreamItem> readStremItemFromFilehtml(String filepath,St
 	return doc_list;
 }
 	
-	private static String freqhashmappath="/home/bhargava/Documents/afghanistanboilerplate/afghanfreqstat/";
-	private static String xzpath="/home/bhargava/Documents/afghanistanboilerplate/afghanistanxz/";
+private static String freqhashmappath="/home/bhargava/Documents/hostagefreqstat/";
+private static String xzpath="/home/bhargava/Documents/hostagexz/";
 	public static void main(String args[])
-	{HashSet<String> xzfiles=new HashSet<String>();
+	{
 	File outfolder=new File(freqhashmappath);
 	String[] innerfolders=outfolder.list();
 	Collections.sort(Arrays.asList(innerfolders));
@@ -134,17 +137,22 @@ public static ArrayList<StreamItem> readStremItemFromFilehtml(String filepath,St
 		File innerfolder=new File(freqhashmappath+innerfolders[i]+"/");
 		String[] files=innerfolder.list();
 		Collections.sort(Arrays.asList(files));
+		ArrayList<String> filelist=new ArrayList<String>();
+		HashSet<String> xzfiles=new HashSet<String>();
 		for(int j=0;j<files.length;j++)
 		{
 		String[] splitfile=files[j].split("@");
 		System.out.println(splitfile[0]);
+		System.out.println(splitfile[1]);
 		xzfiles.add(splitfile[0]);
+		filelist.add(splitfile[1]);
+		
 		}
 		
 	
 	Iterator<String> iter=xzfiles.iterator();
 	while(iter.hasNext())
-	{readStremItemFromFilehtml(xzpath+innerfolders[i]+"/"+iter.next(),innerfolders[i]);
+	{readStremItemFromFilehtml(xzpath+innerfolders[i]+"/"+iter.next(),innerfolders[i],filelist);
 		
 	}
 	}

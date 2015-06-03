@@ -101,26 +101,26 @@ public static void readtrecmatches()
 	readtrecmatches();
 	BufferedWriter excep=null;
 	try {
-		 excep=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/excepconfirm")));
+		 excep=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/excep1top")));
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	}
 	BufferedWriter run=null;
 	try {
-		 run=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/runconfirm.ssv")));
+		 run=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/run1top.ssv")));
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	}BufferedWriter matches=null;
 	try {
-		matches=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/matchconfirm.tsv")));
+		matches=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/match1top.tsv")));
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
 	}BufferedWriter updates=null;
 	try {
-		 updates=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/updateconfirm.tsv")));
+		 updates=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/update1top.tsv")));
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
@@ -164,12 +164,13 @@ public static void readtrecmatches()
 							//	System.in.read();
 								updates.write(update_trec.get(updatespos).qid+"\t"+update_trec.get(updatespos).uid+"\t"+update_trec.get(updatespos).did+"\t"+update_trec.get(updatespos).sid+"\t"+update_trec.get(updatespos).ulength+"\t"+update_trec.get(updatespos).dupid+"\t"+update_trec.get(updatespos).utext);
 								updates.newLine();
-								count++;
+								
 								int matchpos=findinmatches(u.uid);
 								if(matchpos!=-1)
 								{System.out.println(match_trec.get(matchpos));
 								matches.write(match_trec.get(matchpos).qid+"\t"+match_trec.get(matchpos).uid+"\t"+match_trec.get(matchpos).nid+"\t"+match_trec.get(matchpos).ustart+"\t"+match_trec.get(matchpos).uend+"\t"+match_trec.get(matchpos).autop);
-								matches.newLine();}
+								matches.newLine();
+								count++;}
 						
 							}
 							else

@@ -73,11 +73,13 @@ static double K;
 	}
 
 public static void main(String args[])
-{K=Double.parseDouble(args[0]);
-if(args[2]!=null)
-path=args[2];
+{K=0.5;//Double.parseDouble(args[0]);
+//if(args[2]!=null)
+//path=args[2];
+path="/home/bhargava/Documents/hostageclust";
 	try {
-	bw  = new BufferedWriter(new FileWriter(new File(args[1])));
+	//bw  = new BufferedWriter(new FileWriter(new File(args[1])));
+		bw  = new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/afghansumm/hostageupdateseval.tsv")));
 } catch (IOException e1) {
 	// TODO Auto-generated catch block
 	e1.printStackTrace();
@@ -125,12 +127,7 @@ if(checkforquery(summ))
 	
 	}
 	}
-	try {
-		System.in.read();
-	} catch (IOException e1) {
-		// TODO Auto-generated catch block
-		e1.printStackTrace();
-	}
+	
 	for(int file=updatestart;file<files.length;file++)
 	{System.out.println(files[file]);
 		Path path1=Paths.get(rankedsent+"/"+files[file]);
@@ -269,7 +266,7 @@ private static void processsumm(String string) {
 private static boolean checkforquery(ArrayList<runattributes> readsumm) {
 	for(int i=0;i<readsumm.size();i++)
 	{
-		if(readsumm.get(i).sent.contains("boston")||readsumm.get(i).sent.contains("marathon")||readsumm.get(i).sent.contains("bombing"))
+		if(readsumm.get(i).sent.contains("in")||readsumm.get(i).sent.contains("amenas")||readsumm.get(i).sent.contains("hostage")||readsumm.get(i).sent.contains("crisis"))
 			return true;
 	}
 	return false;

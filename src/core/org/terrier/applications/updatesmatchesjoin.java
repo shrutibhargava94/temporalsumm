@@ -93,7 +93,7 @@ class updatesmatchesjoin
 	readtrecupdate();
 	sentences=new HashSet<String>();
 		for(int i=0;i<update_trec.size();i++)
-		{if(update_trec.get(i).qid.equals("TS14.16"))
+		{if(update_trec.get(i).qid.equals("TS14.14"))
 		{
 			for(int j=0;j<match_trec.size();j++)
 			{
