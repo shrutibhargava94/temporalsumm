@@ -1,15 +1,54 @@
 package org.terrier.applications;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
 class matchnuggettest
 {private static ArrayList<matchattributes> match_trec;
 private static ArrayList<nuggetattributes> nugget_trec;
+private static ArrayList<updateattributes> update_trec;
+public static void readtrecupdate()
+{BufferedReader updatetrecread=null;
+String line;
+//System.out.println("here");
+update_trec=new ArrayList<updateattributes>();
+	try {
+		 updatetrecread = new BufferedReader(new FileReader(new File("/home/bhargava/Downloads/updates_sampled.extended.tsv")));
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	try {
+		while((line=updatetrecread.readLine())!=null)
+		{System.out.println("here");
+		String[] attributes=line.split("\t");
+		updateattributes u=new updateattributes();
+		u.qid=attributes[0];
+		u.uid=attributes[1];
+		u.did=attributes[2];
+		u.sid=attributes[3];
+		u.ulength=attributes[4];
+		u.dupid=attributes[5];
+		u.utext=attributes[6];
+		update_trec.add(u);
+}
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+	try {
+		updatetrecread.close();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}
 public static void readtrecmatches()
 {
 	BufferedReader matchtrecread=null;
@@ -86,19 +125,72 @@ public static void trecnuggets()
 	{int count=0;
 		trecnuggets();
 		readtrecmatches();
-		for(int i=0;i<nugget_trec.size();i++)
-		{int f=0;
-			for(int j=0;j<match_trec.size();j++)
-			{//System.out.println(nugget_trec.get(i).nid+ " "+match_trec.get(j).nid);
-				if(nugget_trec.get(i).nid.equals(match_trec.get(j).nid))
-					{//System.out.println(nugget_trec.get(i).nid+ " "+match_trec.get(j).nid);
-					f=1;break;}
-			}
-			
-			if(f==0)
-				{System.out.println(nugget_trec.get(i).text);count++;}
+		readtrecupdate();
+		BufferedWriter bw=null;
+		try {
+			bw=new  BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/trecevaluationanalysis.txt")));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		System.out.println(count+" "+nugget_trec.size());
+		/*for(int i=0;i<match_trec.size();i++)
+		{	if((match_trec.get(i).qid.equals("TS14.14"))||(match_trec.get(i).qid.equals("TS14.16"))||(match_trec.get(i).qid.equals("TS14.17"))||(match_trec.get(i).qid.equals("TS14.22")))
+			{for(int j=0;j<nugget_trec.size();j++)
+			if(match_trec.get(i).nid.equals(nugget_trec.get(j).nid))
+			{	System.out.print(nugget_trec.get(j).text+"§");break;}
+		for(int j=0;j<update_trec.size();j++)
+			if(match_trec.get(i).uid.equals(update_trec.get(j).uid))
+			{	System.out.print(update_trec.get(j).utext);break;}
+		System.out.println();
+		try {
+			System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}}*/
+		for(int j=0;j<update_trec.size();j++)
+		{if((update_trec.get(j).qid.equals("TS14.14"))||(update_trec.get(j).qid.equals("TS14.16"))||(update_trec.get(j).qid.equals("TS14.17"))||(update_trec.get(j).qid.equals("TS14.22")))
+		{	for(int i=0;i<match_trec.size();i++)
+		{	if(match_trec.get(i).uid.equals(update_trec.get(j).uid))
+		{	System.out.println("update "+update_trec.get(j).utext);
+		try {
+			bw.write("update "+update_trec.get(j).utext);
+			bw.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		for(int k=0;k<nugget_trec.size();k++)
+		{
+			if(nugget_trec.get(k).nid.equals(match_trec.get(i).nid))
+			{
+				
+		System.out.println(nugget_trec.get(k).text);
+		try {
+			bw.write(nugget_trec.get(k).text);
+			bw.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+			}
+		}System.out.println();
+		try {
+			bw.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+		}
+		}
+		}
+		try {
+			bw.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

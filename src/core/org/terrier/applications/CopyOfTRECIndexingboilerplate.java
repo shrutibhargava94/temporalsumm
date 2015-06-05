@@ -254,18 +254,23 @@ public class CopyOfTRECIndexingboilerplate {
 	 * @param args the command line arguments.
 	 */
 	public static void main(String[] args)
-	{
+	{String sentencepath=args[0];
+	String listpath=args[1];
+	String indexpath=args[2];
+	String freqstatpath=args[3];
+	String query=args[4];
+	String terrierquery="+"+query.replaceAll(" "," +");
 	System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
     //reading from each hour folder in the sentencefolder to be indexed
-	Path dir = Paths.get("/home/bhargava/Documents/hostagesentence/");
+	Path dir = Paths.get(sentencepath);
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
-		for (Path file: stream) {Path dirfolder = Paths.get("/home/bhargava/Documents/hostageterrierindex/"+file.getFileName().toString());//path for storing index
+		for (Path file: stream) {Path dirfolder = Paths.get(indexpath+file.getFileName().toString());//path for storing index
 		if(file.getFileName().toString().contains(".directory"))
 			continue;
 		Files.createDirectory(dirfolder);
 		System.out.println("created index folder"+dirfolder);
 		ApplicationSetup.setProperty("terrier.index.path", dirfolder.toString());
-		ApplicationSetup.setProperty("collection.spec", "/home/bhargava/Documents/hostagelistforterrier/"+file.getFileName().toString());//path for list for terrier indexing
+		ApplicationSetup.setProperty("collection.spec", listpath+file.getFileName().toString());//path for list for terrier indexing
 		ApplicationSetup.loadCommonProperties();
 		long startTime = System.currentTimeMillis();
 		CopyOfTRECIndexingboilerplate t = new CopyOfTRECIndexingboilerplate();
@@ -273,7 +278,7 @@ public class CopyOfTRECIndexingboilerplate {
 		t.index();
 		System.out.println("doneindexing");
 		InteractiveQuerying iq=new InteractiveQuerying();
-		iq.processQuery("q1","+in +amenas +hostage +crisis", 1.0);//change query according to the event
+		iq.processQuery("q1",terrierquery, 1.0);//change query according to the event
 		//result file name and docid in this file 
 		Scanner in=new Scanner(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));//path for taking things from interactive query
 		// BufferedWriter bw=new BufferedWriter(new FileWriter(new File("home/bhargava/Documents/firstsetuptry/frequency)))
@@ -281,7 +286,7 @@ public class CopyOfTRECIndexingboilerplate {
 		PostingIndex<?> di = index.getDirectIndex();
 		DocumentIndex doi = index.getDocumentIndex();
 		Lexicon<String> lex = index.getLexicon();
-		Path dirfolderfreq = Paths.get("/home/bhargava/Documents/hostagefreqstat/"+file.getFileName().toString());//path for saving statistics to
+		Path dirfolderfreq = Paths.get(freqstatpath+file.getFileName().toString());//path for saving statistics to
 		try {
 			Files.createDirectory(dirfolderfreq);
 		} catch (IOException e) {
