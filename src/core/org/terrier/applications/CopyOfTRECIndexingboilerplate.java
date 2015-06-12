@@ -254,13 +254,26 @@ public class CopyOfTRECIndexingboilerplate {
 	 * @param args the command line arguments.
 	 */
 	public static void main(String[] args)
-	{String sentencepath=args[0];
-	String listpath=args[1];
-	String indexpath=args[2];
-	String freqstatpath=args[3];
-	String query=args[4];
+	{Scanner input=new Scanner(System.in);
+		System.out.println("Folders for saving the frequency statistics and the index both need to be created before starting with this");
+	System.out.println("Enter the path where the documents are saved Example /home/bhargava/Documents/nilamsentence");
+    String sentencepath=input.nextLine();
+    System.out.println("Enter the path where the list for the documents are saved Example /home/bhargava/Documents/nilamlistforterrier/");
+	String listpath=input.nextLine();
+	System.out.println("Enter the path where indexes are to be saved Example /home/bhargava/Documents/nilamindex/");
+	String indexpath=input.nextLine();
+	System.out.println("Enter the path where the frequency statistics to be used in feature computation are to be saved Example /home/bhargava/Documents/nilamfreqstat/");
+	String freqstatpath=input.nextLine();
+	System.out.println("Enter the query");
+	String query=input.nextLine();
+	System.out.println("Enter the path for terrier home Example /home/bhargava/Documents/terrier-4.0/");
+	String terrierhomepath=input.nextLine();
+	System.out.println("Enter a path for the retrieval from interactive query");
+	String interactivequerypath=input.nextLine();
 	String terrierquery="+"+query.replaceAll(" "," +");
-	System.setProperty("terrier.home","/home/bhargava/Documents/terrier-4.0/");
+	System.out.println(terrierquery);
+	
+	System.setProperty("terrier.home",terrierhomepath);
     //reading from each hour folder in the sentencefolder to be indexed
 	Path dir = Paths.get(sentencepath);
 	try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
@@ -276,11 +289,11 @@ public class CopyOfTRECIndexingboilerplate {
 		CopyOfTRECIndexingboilerplate t = new CopyOfTRECIndexingboilerplate();
 		System.out.println("initialized trec indexing");
 		t.index();
-		System.out.println("doneindexing");
-		InteractiveQuerying iq=new InteractiveQuerying();
+		System.out.println("done indexing");
+		InteractiveQuerying iq=new InteractiveQuerying(interactivequerypath);
 		iq.processQuery("q1",terrierquery, 1.0);//change query according to the event
 		//result file name and docid in this file 
-		Scanner in=new Scanner(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));//path for taking things from interactive query
+		Scanner in=new Scanner(new File(interactivequerypath));//path for taking things from interactive query
 		// BufferedWriter bw=new BufferedWriter(new FileWriter(new File("home/bhargava/Documents/firstsetuptry/frequency)))
 		Index index = Index.createIndex();
 		PostingIndex<?> di = index.getDirectIndex();

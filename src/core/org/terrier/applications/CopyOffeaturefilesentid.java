@@ -23,10 +23,11 @@ import edu.stanford.nlp.util.CoreMap;
 
 class CopyOffeaturefilesentid
 {int sentencepos;
-private String htmlfilterpath="/home/bhargava/Documents/hostagecontentfilter/";
+private String htmlfilterpath;//="/home/bhargava/Documents/hostagecontentfilter/";
 private ArrayList<String> nonboilerplatesentences;
-	public void computefeaturesforfile(String string, String files, ArrayList<String> querycontent, HashMap<String, Double> hourfreq, HashMap<String, Double> topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic, HashMap<String, sentencerank> rankmap) {
+	public void computefeaturesforfile(String string, String files, ArrayList<String> querycontent, HashMap<String, Double> hourfreq, HashMap<String, Double> topicweight, HashMap<String, Double> freq, BufferedWriter bw, int topic, HashMap<String, sentencerank> rankmap, String contentpath) {
 		// TODO Auto-generated method stub
+		htmlfilterpath=contentpath;
 		File article=new File(string+"/"+files);
 		if(preprocessnewspaperoutput(files, string)!=-1)
 		{

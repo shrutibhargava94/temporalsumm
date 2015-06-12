@@ -15,14 +15,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 
 class sus22may
 {static ArrayList<runattributes> updates=new ArrayList<runattributes>();
-static String path="/home/bhargava/afghansumm26may";
+static String path;//="/home/bhargava/afghansumm26may";
 static BufferedWriter bw=null;
 static double K;
 	//checking if summary contains the query
+private static String[] querytermsarray;
 	
 	//read summary for hour
 	public static ArrayList<runattributes> readsumm(String filename)
@@ -76,10 +78,17 @@ public static void main(String args[])
 {K=0.5;//Double.parseDouble(args[0]);
 //if(args[2]!=null)
 //path=args[2];
-path="/home/bhargava/Documents/hostageclust";
+Scanner input=new Scanner(System.in);
+System.out.println("Enter the path where the clusters are saved Example /home/bhargava/Documents/nilamclust");
+path=input.nextLine();//"/home/bhargava/Documents/hostageclust";
+System.out.println("Enter the path where the upadtes will be saved Example /home/bhargava/Documents/afghanistanfull/afghansumm/nilamupdateseval.tsv");
+String pathforupdates = input.nextLine();
+System.out.println("Enter the query");
+String query=input.nextLine();
+queryprocess(query);
 	try {
 	//bw  = new BufferedWriter(new FileWriter(new File(args[1])));
-		bw  = new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/afghanistanfull/afghansumm/hostageupdateseval.tsv")));
+		bw  = new BufferedWriter(new FileWriter(new File(pathforupdates)));
 } catch (IOException e1) {
 	// TODO Auto-generated catch block
 	e1.printStackTrace();
@@ -151,6 +160,11 @@ try {
 	e.printStackTrace();
 }}
 	
+private static void queryprocess(String query) {
+	// TODO Auto-generated method stub
+	querytermsarray=query.split(" ");
+}
+
 public static double infogain_check(ArrayList<String> y,ArrayList<String> x)
 {
 	Map<String, Double> wordCounty = new HashMap<>();
@@ -266,8 +280,11 @@ private static void processsumm(String string) {
 private static boolean checkforquery(ArrayList<runattributes> readsumm) {
 	for(int i=0;i<readsumm.size();i++)
 	{
-		if(readsumm.get(i).sent.contains("in")||readsumm.get(i).sent.contains("amenas")||readsumm.get(i).sent.contains("hostage")||readsumm.get(i).sent.contains("crisis"))
-			return true;
+		for(int j=0;j<querytermsarray.length;j++)
+			if(readsumm.get(i).sent.contains(querytermsarray[j].toLowerCase()))
+				return true;
+		//if(readsumm.get(i).sent.contains("in")||readsumm.get(i).sent.contains("amenas")||readsumm.get(i).sent.contains("hostage")||readsumm.get(i).sent.contains("crisis"))
+			//return true;
 	}
 	return false;
 	

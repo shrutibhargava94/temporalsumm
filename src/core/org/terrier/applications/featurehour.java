@@ -14,12 +14,24 @@ import java.util.HashMap;
 import java.util.Map;
 
 class featurehour
-{public static String hashmappath="/home/bhargava/Documents/hostagefreqstat/";
-static String path="/home/bhargava/Documents/hostagesentence/";
+{public  String hashmappath;//="/home/bhargava/Documents/hostagefreqstat/";
+ String path;//="/home/bhargava/Documents/hostagesentence/";
 HashMap<String,Double> hourfreq;
+private String featurespath;
+private String contentpath;
+	public featurehour(String sentencepath, String featurespath,
+		String freqhashmappath, String contentpath) {
+	// TODO Auto-generated constructor stub
+		path=sentencepath;
+		hashmappath=freqhashmappath;
+		this.featurespath=featurespath;
+		this.contentpath=contentpath;
+}
 	public void computefeaturesforhour(String string, String innerfolders, ArrayList<String> querycontent, HashMap<String, Double> topicweight, int topic) {
 		// TODO Auto-generated method stub
-		File f=new File("/home/bhargava/Documents/hostagefeatures/trecfeaturesner"+innerfolders+".txt");
+		if(!innerfolders.contains(".directory"))
+		{
+		File f=new File(featurespath+"/trecfeaturesner"+innerfolders+".txt");
 		FileWriter fw=null;
 		try {
 			 fw=new FileWriter(f);
@@ -32,6 +44,8 @@ HashMap<String,Double> hourfreq;
 		
 		File outfolder=new File(string+innerfolders);
 		String[] files=outfolder.list();
+		if(files.length!=0)
+		{
 		Collections.sort(Arrays.asList(files));
 		hourfreq=new HashMap<String,Double>();
 		for(int i=0;i<files.length;i++)
@@ -104,12 +118,12 @@ HashMap<String,Double> hourfreq;
 			//featurefile file=new featurefile();
 				CopyOffeaturefilesentid file=new CopyOffeaturefilesentid();
 			System.out.println(path+innerfolders);
-			file.computefeaturesforfile(path+innerfolders,files[i],querycontent,hourfreq,topicweight,freq,bw,topic,null);
+			file.computefeaturesforfile(path+innerfolders,files[i],querycontent,hourfreq,topicweight,freq,bw,topic,null,contentpath);
 		}
 try {
 	bw.close();
 } catch (IOException e) {
 	// TODO Auto-generated catch block
 	e.printStackTrace();
+}}}
 }}
-}

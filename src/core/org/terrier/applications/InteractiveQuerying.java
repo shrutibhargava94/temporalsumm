@@ -78,9 +78,12 @@ public class InteractiveQuerying {
 		Integer.parseInt(ApplicationSetup.getProperty("interactive.output.format.length", "1"));
 	
 	protected String[] metaKeys = ApplicationSetup.getProperty("interactive.output.meta.keys", "docno").split("\\s*,\\s*");
+
+	private String pathforsavingtopdocids;
 	
 	/** A default constructor initialises the index, and the Manager. */
-	public InteractiveQuerying() {
+	public InteractiveQuerying(String path) {
+		pathforsavingtopdocids=path;
 		loadIndex();
 		createManager();		
 	}
@@ -189,7 +192,7 @@ public class InteractiveQuerying {
 	 * @param q SearchRequest the search request to get results from.
 	 */
 	public void printResults(PrintWriter pw, SearchRequest q) throws IOException {
-		PrintWriter pw1=new PrintWriter(new File("/home/bhargava/Documents/firstsetuptry/retrivaltry.txt"));
+		PrintWriter pw1=new PrintWriter(new File(pathforsavingtopdocids));
 		ResultSet set = q.getResultSet();
 		int[] docids = set.getDocids();
 		double[] scores = set.getScores();
@@ -265,7 +268,7 @@ public class InteractiveQuerying {
 	 * @param args the command line arguments.
 	 */
 	public static void main(String[] args) {
-		InteractiveQuerying iq = new InteractiveQuerying();
+		InteractiveQuerying iq = new InteractiveQuerying(null);
 		if (args.length == 0)
 		{
 			iq.processQueries(1.0);

@@ -20,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Scanner;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -39,6 +40,7 @@ private ArrayList<JaccardDocument> jaccarddoclist;
 private ArrayList<String> termspacelist;
 private ArrayList<runattributes> summarylist;
 static int K=100;
+private static String summarypath;
 	public  void readfileandtermspace(String filename)
 	{termspace=new HashSet<String>();
 	termspacereduce =new HashMap<String, Integer>();
@@ -115,7 +117,7 @@ static int K=100;
 	
 	private void processlsh(String string, String string2) {BufferedWriter bw = null;
 	try {
-		 bw=new BufferedWriter(new FileWriter(new File("/home/bhargava/Documents/hostageclust/"+string2)));
+		 bw=new BufferedWriter(new FileWriter(new File(summarypath+string2)));
 	} catch (IOException e1) {
 		// TODO Auto-generated catch block
 		e1.printStackTrace();
@@ -238,13 +240,13 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 	Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(jaccarddoclist.get(0));
 	HashMap<String, runattributes> cluster = new HashMap<String, runattributes>();
 	cluster.put(jaccarddoclist.get(0).key(),rankedsent.get(jaccarddoclist.get(0).key()));
-//System.out.println(jaccarddoclist.get(0).key());
+System.out.println(jaccarddoclist.get(0).key());
 
 
 	while (result.hasNext()) {
 	RankedDocument item = result.next();
 	cluster.put(item.item().key(),rankedsent.get(item.item().key()));
-	//System.out.println(item.item().key());
+	System.out.println(item.item().key());
 	
 	}clusters.add(cluster);
 	for(int i=1;i<jaccarddoclist.size();i++)
@@ -264,7 +266,7 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 		HashMap<String,runattributes> cluster1=new HashMap<String, runattributes>();
 	Iterator<RankedDocument> result1 = (Iterator<RankedDocument>) minhash.neighbours(jaccarddoclist.get(i));
 	cluster1.put(jaccarddoclist.get(i).key(),rankedsent.get(jaccarddoclist.get(i).key()));
-	//System.out.println(jaccarddoclist.get(i).key());
+	System.out.println(jaccarddoclist.get(i).key());
 	
 	while (result1.hasNext()) {
 	RankedDocument item = result1.next();
@@ -279,9 +281,15 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 	}if(alreadycovered1==0)
 	{
 	cluster1.put(item.item().key(),rankedsent.get(item.item().key()));
-//System.out.println(item.item().key());
+System.out.println(item.item().key());
 	}
 	}clusterct++;clusters.add(cluster1);
+	try {
+		System.in.read();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
 	
 	
 	}
@@ -420,8 +428,11 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 	   
 	}
 	public static void main(String args[])
-	{
-		String path="/home/bhargava/Documents/hostageresultsranking";
+	{Scanner input=new Scanner(System.in);
+	System.out.println("Enter the path for the ranking results example /home/bhargava/Documents/nilamresultsranking");
+		String path=input.nextLine();//"/home/bhargava/Documents/hostageresultsranking";
+		System.out.println("Enter the path where the summaries will be stored example /home/bhargava/Documents/nilamclust/");
+	  summarypath=input.nextLine();
 		File rankedsent=new File(path);
 		String[] files=rankedsent.list();
 		Collections.sort(Arrays.asList(files));
@@ -439,6 +450,12 @@ Iterator<RankedDocument> result = (Iterator<RankedDocument>) minhash.neighbours(
 		if((files[file].contains("eval"))&&(filesize>0))
 		{lshtry21maytoprankedsent st=new lshtry21maytoprankedsent();
 		st.processlsh(path+"/",files[file]);
+  try {
+	System.in.read();
+} catch (IOException e) {
+	// TODO Auto-generated catch block
+	e.printStackTrace();
+}
 		}
 			
 		}

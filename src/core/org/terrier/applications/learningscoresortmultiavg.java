@@ -23,6 +23,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 import java.util.TimeZone;
 import java.util.Map.Entry;
 
@@ -118,7 +119,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	}
     }
 }
-	public static void process(String folders)
+	public static void process(String folders, String resultspath, String averagescores, String featurepathforavg)
 	{/*File f=new File("/home/bhargava/afghanresults26may/rankedner"+folders);
 	FileWriter fw=null;
 	try {
@@ -129,7 +130,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	}*/
 	
 //	BufferedWriter bw=new BufferedWriter(fw);
-	{File f4=new File("/home/bhargava/Documents/hostageresultsranking/rankedeval"+folders);
+	{File f4=new File(resultspath+"/rankedeval"+folders);
 	FileWriter fw4=null;
 	try {
 		 fw4=new FileWriter(f4);
@@ -149,7 +150,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 	}
 	
 	BufferedWriter bw2=new BufferedWriter(fw2);*/
-		File f1=new File("/home/bhargava/Documents/hostagescoresavg/"+folders);
+		File f1=new File(averagescores+folders);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -158,7 +159,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			e.printStackTrace();
 		}
 		BufferedReader br=new BufferedReader(fr);
-		File f2=new File("/home/bhargava/Documents/hostagefeatures/"+folders);
+		File f2=new File(featurepathforavg+"/"+folders);
 		FileReader fr1 = null;
 		try {
 			fr1 = new FileReader(f2);
@@ -283,8 +284,18 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 		}
 	
 	public static void main(String args[])
-	{  	average();
-		String scorepath="/home/bhargava/Documents/hostagescoresavg";
+	{  	System.out.println("Create folders for scoresavg and rankingresults");
+		Scanner input=new Scanner(System.in);
+	System.out.println("Enter the path for the folder where the features are saved Example /home/bhargava/Documents/nilamfeatures");
+	String featurepathforavg=input.nextLine();
+	System.out.println("Enter the path for the folder where the scores are saved Example /home/bhargava/Documents/nilamscores/");
+	String scorespathforavg=input.nextLine();
+	System.out.println("Enter the path for the folder where the average scores are saved Example /home/bhargava/Documents/nilamscoresavg/");
+	String averagescores=input.nextLine();
+	System.out.println("Enter the path for the rankings will be saved Example /home/bhargava/Documents/hostageresultsranking");
+	String resultspath=input.nextLine();
+		average(featurepathforavg,scorespathforavg,averagescores);
+		String scorepath=averagescores;//"/home/bhargava/Documents/hostagescoresavg";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));
@@ -302,14 +313,14 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 		{
 			System.out.println(folders[i]);
 		
-			process(folders[i]);
+			process(folders[i],resultspath,averagescores,featurepathforavg);
 		}
 		
 		}
 	}
-	private static void average() {
+	private static void average(String featurepathforavg,String scorespathforavg, String averagescores) {
 		// TODO Auto-generated method stub
-		String scorepath="/home/bhargava/Documents/hostagefeatures";
+		String scorepath=featurepathforavg;//"/home/bhargava/Documents/hostagefeatures";
 		File scores=new File(scorepath);
 		String[] folders=scores.list();
 		Collections.sort(Arrays.asList(folders));
@@ -321,7 +332,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			System.out.println(folders[i]);
 		for(int j=0;j<10;j++)
 		{int filenum=j+1;
-			File f1=new File("/home/bhargava/Documents/hostagescores/"+folders[i]+filenum);
+			File f1=new File(scorespathforavg+folders[i]+filenum);
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f1);
@@ -365,7 +376,7 @@ String time=timehour[1].substring(0,timehour[1].indexOf("."));
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}}	File f=new File("/home/bhargava/Documents/hostagescoresavg/"+folders[i]);
+			}}	File f=new File(averagescores+folders[i]);
 		FileWriter fw=null;
 		try {
 			 fw=new FileWriter(f);

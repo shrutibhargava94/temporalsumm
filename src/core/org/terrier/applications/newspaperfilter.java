@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Scanner;
 
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream;
 import org.apache.thrift.TException;
@@ -120,22 +121,33 @@ public static ArrayList<StreamItem> readStremItemFromFilehtml(String filepath,St
 private static String freqhashmappath="/home/bhargava/Documents/hostagefreqstat/";
 private static String xzpath="/home/bhargava/Documents/hostagexz/";
 	public static void main(String args[])
-	{
+	{Scanner input=new Scanner(System.in);
+	System.out.println("The folder where the html files will be saved needs to be created");
+	System.out.println("Enter the path for the frequency statistics of the top ranked document Example /home/bhargava/Documents/nilamfreqstat/");
+	freqhashmappath=input.nextLine();
+	System.out.println("Enter the path for the xz files Example /home/bhargava/Documents/nilamxz/");
+	xzpath=input.nextLine();
+	System.out.println("Enter the path where the html files will be stored Example /home/bhargava/Documents/nilamhtmlfilter");
+	htmlpath=input.nextLine();
 	File outfolder=new File(freqhashmappath);
 	String[] innerfolders=outfolder.list();
 	Collections.sort(Arrays.asList(innerfolders));
 	for(int i=0;i<innerfolders.length;i++)
-	{Path dirfolderfreq = Paths.get(htmlpath+"/"+innerfolders[i]);//path for saving statistics to
+	{if(!innerfolders[i].equals(".directory"))
+		{Path dirfolderfreq = Paths.get(htmlpath+"/"+innerfolders[i]);//path for saving statistics to
 	try {
 		Files.createDirectory(dirfolderfreq);
 	} catch (IOException e) {
 		// TODO Auto-generated catch block
 		System.out.println("Unable to create directory");
 		e.printStackTrace();
+		break;
 	}
 		System.out.println(innerfolders[i]);
 		File innerfolder=new File(freqhashmappath+innerfolders[i]+"/");
 		String[] files=innerfolder.list();
+		if(files.length!=0)
+		{
 		Collections.sort(Arrays.asList(files));
 		ArrayList<String> filelist=new ArrayList<String>();
 		HashSet<String> xzfiles=new HashSet<String>();
@@ -155,6 +167,6 @@ private static String xzpath="/home/bhargava/Documents/hostagexz/";
 	{readStremItemFromFilehtml(xzpath+innerfolders[i]+"/"+iter.next(),innerfolders[i],filelist);
 		
 	}
-	}
-	}
+	}}
+	}}
 }
