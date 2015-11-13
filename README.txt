@@ -1,3 +1,5 @@
+Modifications to Terrier and additional code for TREC TS
+
 Terrier - Terabyte Retriever version 4.0
 Webpage: http://terrier.org 
 Contact: terrier{a.}dcs.gla.ac.uk
